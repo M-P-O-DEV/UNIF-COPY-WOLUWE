@@ -87,7 +87,7 @@
     margin: 12px 0;
     display: inline-block;
     text-decoration: none;
-    width: 100%; 
+    width: 100%;  
   }
   button:hover, .link-button:hover {
     color: #ffb347; border-color: #ffb347;
@@ -120,7 +120,7 @@
     user-select: text;
   }
   #result a { color: #ffb347; text-decoration: none; font-weight: 900; word-break: break-word; transition: text-shadow 0.3s ease; }
-  #result a:hover { 
+  #result a:hover {  
     color: #ff6f00;
    }
   
@@ -128,14 +128,14 @@
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(18, 18, 18, 0.95); color: #ff6f00;
     display: none; flex-direction: column; justify-content: center; align-items: center;
-    padding: 20px 25px; 
+    padding: 20px 25px;  
     text-align: center; z-index: 9999; user-select: text;
     font-size: 1.8rem; line-height: 1.5;
     border: 4px solid #ff6f00; border-radius: 15px; max-width: 600px; margin: 80px auto;
   }
   .overlay button {
-     margin-top: 20px;
-     margin-bottom: 10px;
+      margin-top: 20px;
+      margin-bottom: 10px;
   }
 
   .contact-row {
@@ -147,8 +147,8 @@
     margin-bottom: 0;
     border-bottom: 1px solid #ff6f00;
   }
-  /* MODIFICATION : La règle qui enlevait la bordure sur le dernier élément a été supprimée */
   .contact-row:last-of-type {
+    border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 20px;
   }
@@ -156,8 +156,8 @@
     text-align: center;
     font-size: 1.2rem;
     line-height: 1.4;
-    word-break: break-all;
-    margin-bottom: 20px; 
+    word-break: normal; /* CORRECTION 1 : Empêche de couper l'e-mail */
+    margin-bottom: 20px;  
   }
   .contact-info span {
     font-size: 1rem;
@@ -169,18 +169,14 @@
     padding: 12px 15px;
     font-size: 1.1rem;
     width: 100%;
-    max-width: 350px; 
-  }
-  #contactsOverlay > button {
-      width: 100%;
-      max-width: 350px;
-      font-size: 1.1rem;
-      padding: 12px 15px;
-      margin-top: 10px;
+    max-width: 350px;  
   }
   
-  #closeContactsBtn {
-      width: auto;
+  /* CORRECTION 3 : AJOUT D'UN BLOC POUR LES PETITS ÉCRANS */
+  @media (max-width: 480px) {
+    .contact-row .contact-info {
+        font-size: 1rem; /* Réduit la police pour que l'email tienne */
+    }
   }
 
 </style>
@@ -189,7 +185,7 @@
   <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
   <main>
     <button id="hoursBtn">HEURES D'OUVERTURE</button>
-    <button id="startBtn">IMPRIMER SUR PLACE</button> 
+    <button id="startBtn">IMPRIMER SUR PLACE</button>  
     <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDER EN LIGNE</a>
     <button id="mailBtn">COMMANDER PAR MAIL</button>
     <button id="contactsBtn">CONTACTS</button>
@@ -254,7 +250,7 @@
               <button id="askQuestionBtn">POSER UNE QUESTION</button>
           </div>
       </div>
-      <button id="closeContactsBtn">RETOUR</button>
+      <button id="closeContactsBtn" style="width: auto; font-size: 1rem; padding: 10px 35px;">RETOUR</button>
   </div>
 
 
@@ -280,7 +276,7 @@
   const selfServiceMailOverlay = document.getElementById('selfServiceMailOverlay');
   const sendFilesBtn = document.getElementById('sendFilesBtn');
   const cancelMailProcessBtn = document.getElementById('cancelMailProcessBtn');
-  const contactsBtn = document.getElementById('contactsBtn'); 
+  const contactsBtn = document.getElementById('contactsBtn');  
   const contactsOverlay = document.getElementById('contactsOverlay');
   const callBtn = document.getElementById('callBtn');
   const askQuestionBtn = document.getElementById('askQuestionBtn');
@@ -295,7 +291,7 @@
     orderBtn.style.display = 'none';
     hoursBtn.style.display = 'none';
     mailBtn.style.display = 'none';
-    contactsBtn.style.display = 'none'; 
+    contactsBtn.style.display = 'none';  
   }
 
   function showAllMenus() {
@@ -307,12 +303,12 @@
   }
 
   // --- GESTION DES MENUS ---
-  mailBtn.addEventListener('click', () => { 
-    mailOverlay.style.display = 'flex'; 
+  mailBtn.addEventListener('click', () => {  
+    mailOverlay.style.display = 'flex';  
     hideAllMenus();
   });
-  closeMailBtn.addEventListener('click', () => { 
-    mailOverlay.style.display = 'none'; 
+  closeMailBtn.addEventListener('click', () => {  
+    mailOverlay.style.display = 'none';  
     showAllMenus();
   });
 
@@ -375,11 +371,11 @@
   });
 
   async function startCamera() {
-    printOverlay.style.display = 'none'; 
+    printOverlay.style.display = 'none';  
     resultDiv.style.display = 'none';
     video.style.display = 'block';
     cancelBtn.style.display = 'inline-block';
-    scanInstruction.style.display = 'block'; 
+    scanInstruction.style.display = 'block';  
 
     try {
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } });
