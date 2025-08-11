@@ -1,4 +1,5 @@
 <!doctype html>
+<html lang="fr"><!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
@@ -150,11 +151,16 @@
     margin-bottom: 0;
     border-bottom: 1px solid #ff6f00;
   }
+  
+  /* MODIFICATION 1 : La règle qui enlevait la bordure du dernier élément a été supprimée */
+  /*
   .contact-row:last-of-type {
     border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 20px;
   }
+  */
+
   .contact-info {
     text-align: center;
     font-size: 1.2rem;
@@ -298,7 +304,519 @@
               <button id="askQuestionBtn">POSER UNE QUESTION</button>
           </div>
       </div>
-      <button id="closeContactsBtn" style="width: auto; font-size: 1rem; padding: 10px 35px; margin-top: 25px;">RETOUR</button>
+      <button id="closeContactsBtn" style="width: auto; font-size: 1rem; padding: 10px 35px; margin-top: 40px;">RETOUR</button>
+  </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+  // Le code Javascript reste inchangé
+  // --- ÉLÉMENTS DU DOM ---
+  const mailBtn = document.getElementById('mailBtn');
+  const mailOverlay = document.getElementById('mailOverlay');
+  const closeMailBtn = document.getElementById('closeMailBtn');
+  const hoursBtn = document.getElementById('hoursBtn');
+  const hoursOverlay = document.getElementById('hoursOverlay');
+  const closeHoursBtn = document.getElementById('closeHoursBtn');
+  const orderBtn = document.getElementById('orderBtn');
+  const video = document.getElementById('video');
+  const resultDiv = document.getElementById('result');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const startBtn = document.getElementById('startBtn');
+  const printOverlay = document.getElementById('printOverlay');
+  const scanBtn = document.getElementById('scanBtn');
+  const closePrintBtn = document.getElementById('closePrintBtn');
+  const scanInstruction = document.getElementById('scanInstruction');
+  const startMailProcessBtn = document.getElementById('startMailProcessBtn');
+  const selfServiceMailOverlay = document.getElementById('selfServiceMailOverlay');
+  const sendFilesBtn = document.getElementById('sendFilesBtn');
+  const cancelMailProcessBtn = document.getElementById('cancelMailProcessBtn');
+  const contactsBtn = document.getElementById('contactsBtn');  
+  const contactsOverlay = document.getElementById('contactsOverlay');
+  const callBtn = document.getElementById('callBtn');
+  const askQuestionBtn = document.getElementById('askQuestionBtn');
+  const closeContactsBtn = document.getElementById('closeContactsBtn');
+
+
+  let stream, scanning = false;
+
+  // --- FONCTIONS UTILITAIRES ---
+  function hideAllMenus() {
+    startBtn.style.display = 'none';
+    orderBtn.style.display = 'none';
+    hoursBtn.style.display = 'none';
+    mailBtn.style.display = 'none';
+    contactsBtn.style.display = 'none';  
+  }
+
+  function showAllMenus() {
+    startBtn.style.display = 'inline-block';
+    orderBtn.style.display = 'inline-block';
+    hoursBtn.style.display = 'inline-block';
+    mailBtn.style.display = 'inline-block';
+    contactsBtn.style.display = 'inline-block';
+  }
+
+  // --- GESTION DES MENUS ---
+  mailBtn.addEventListener('click', () => {  
+    mailOverlay.style.display = 'flex';  
+    hideAllMenus();
+  });
+  closeMailBtn.addEventListener('click', () => {  
+    mailOverlay.style.display = 'none';  
+    showAllMenus();
+  });
+
+  hoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'flex';
+    hideAllMenus();
+  });
+  closeHoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'none';
+    showAllMenus();
+  });
+
+  startBtn.addEventListener('click', () => {
+    printOverlay.style.display = 'flex';
+    hideAllMenus();
+  });
+  closePrintBtn.addEventListener('click', () => {
+    printOverlay.style.display = 'none';
+    showAllMenus();
+  });
+  
+  contactsBtn.addEventListener('click', () => {
+    contactsOverlay.style.display = 'flex';
+    hideAllMenus();
+  });
+  callBtn.addEventListener('click', () => {
+    window.location.href = 'tel:+3224613005';
+  });
+  askQuestionBtn.addEventListener('click', () => {
+    window.location.href = 'mailto:FACOPYBXL@PROXIMUS.BE';
+  });
+  closeContactsBtn.addEventListener('click', () => {
+    contactsOverlay.style.display = 'none';
+    showAllMenus();
+  });
+
+
+  // --- GESTION DE L'ENVOI DE MAIL SELF-SERVICE ---
+  startMailProcessBtn.addEventListener('click', () => {
+      printOverlay.style.display = 'none';
+      selfServiceMailOverlay.style.display = 'flex';
+  });
+  sendFilesBtn.addEventListener('click', () => {
+      window.location.href = 'mailto:UNIFCOPY@OUTLOOK.COM';
+      selfServiceMailOverlay.style.display = 'none';
+      showAllMenus();
+  });
+  cancelMailProcessBtn.addEventListener('click', () => {
+      selfServiceMailOverlay.style.display = 'none';
+      showAllMenus();
+  });
+
+
+  // --- GESTION DU SCANNER QR CODE ---
+  scanBtn.addEventListener('click', startCamera);
+  cancelBtn.addEventListener('click', () => {
+    scanning = false;
+    stopCamera();
+    resetScan();
+  });
+
+  async function startCamera() {
+    printOverlay.style.display = 'none';  
+    resultDiv.style.display = 'none';
+    video.style.display = 'block';
+    cancelBtn.style.display = 'inline-block';
+    scanInstruction.style.display = 'block';  
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } });
+    } catch (err) {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      } catch (err2) {
+        alert('Impossible d’accéder à la caméra. Vérifiez les autorisations de votre navigateur.');
+        resetScan();
+        return;
+      }
+    }
+    video.srcObject = stream;
+    try { await video.play(); } catch (err) { console.error("Erreur lecture vidéo:", err); }
+    scanning = true;
+    scanLoop();
+  }
+
+  function scanLoop() {
+    if (!scanning || !video.videoWidth) {
+      requestAnimationFrame(scanLoop);
+      return;
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+    if (code) {
+      scanning = false;
+      stopCamera();
+      showResult(code.data);
+    } else {
+      requestAnimationFrame(scanLoop);
+    }
+  }
+
+  function stopCamera() {
+    if (stream) {
+      stream.getTracks().forEach(t => t.stop());
+      stream = null;
+    }
+  }
+
+  function showResult(data) {
+    video.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    scanInstruction.style.display = 'none';
+    resultDiv.style.display = 'flex';
+    if (isURL(data)) {
+      resultDiv.innerHTML = `
+        <a href="${data}" target="_blank" rel="noopener noreferrer" style="font-size: 1.2rem;">${data}</a>
+        <button onclick="window.open('${data}', '_blank')" style="width:100%;">SUIVRE LE LIEN</button>
+        <button onclick="resetScan()" style="width:100%;">RECOMMENCER</button>
+      `;
+    } else {
+      resultDiv.innerHTML = `
+        <div>${data}</div>
+        <button onclick="resetScan()" style="width:100%;">RECOMMENCER</button>
+      `;
+    }
+  }
+
+  function resetScan() {
+    resultDiv.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    video.style.display = 'none';
+    scanInstruction.style.display = 'none';
+    showAllMenus();
+  }
+
+  function isURL(str) {
+    try { new URL(str); return true; }
+    catch { return false; }
+  }
+</script>
+</body>
+</html>
+
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UNIF-COPY WOLUWE - Impression sur Place</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #1a1a1a, #2f2f2f, #121212);
+    font-family: 'Orbitron', sans-serif;
+    color: #ff6f00;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    user-select: none;
+  }
+  header {
+    width: 100%;
+    padding: 25px 0;
+    background: linear-gradient(90deg, #ff6f00, #ffb347);
+    color: black;
+    font-size: 2.8rem;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    animation: flicker 3s infinite alternate;
+    border-bottom: 4px solid #ff6f00;
+  }
+  header::before, header::after {
+    content: attr(data-text);
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    color: #ff6f00; opacity: 0.7;
+    clip-path: polygon(0 2%, 100% 2%, 100% 8%, 0 8%);
+    animation: glitchTop 2s infinite linear alternate-reverse;
+  }
+  header::after {
+    color: #ffb347;
+    clip-path: polygon(0 85%, 100% 85%, 100% 90%, 0 90%);
+    animation: glitchBottom 3s infinite linear alternate;
+  }
+  @keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+      opacity: 1;
+    }
+    20%, 22%, 24%, 55% { opacity: 0.6; }
+  }
+  @keyframes glitchTop {
+    0%,100% { transform: translate(0); opacity: 0.7; }
+    20% { transform: translate(-2px, -2px); opacity: 0.4; }
+    40% { transform: translate(2px, 2px); opacity: 0.7; }
+    60% { transform: translate(-2px, 2px); opacity: 0.4; }
+    80% { transform: translate(2px, -2px); opacity: 0.7; }
+  }
+  @keyframes glitchBottom {
+    0%,100% { transform: translate(0); opacity: 0.7; }
+    20% { transform: translate(2px, 2px); opacity: 0.4; }
+    40% { transform: translate(-2px, -2px); opacity: 0.7; }
+    60% { transform: translate(2px, -2px); opacity: 0.4; }
+    80% { transform: translate(-2px, 2px); opacity: 0.7; }
+  }
+  main { width: 100%; max-width: 640px; padding: 30px 25px; text-align: center; }
+  
+  button, .link-button {
+    position: relative;
+    background: transparent;
+    border: 3px solid #ff6f00;
+    color: #ff6f00;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    padding: 14px 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    user-select: none;
+    box-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347, 0 0 30px #ff6f00, 0 0 60px #ffb347;
+    margin: 12px 0;
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;  
+  }
+  button:hover, .link-button:hover {
+    color: #ffb347; border-color: #ffb347;
+    box-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347;
+  }
+  button::before, .link-button::before {
+    content: "";
+    position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(120deg, transparent 0%, rgba(255, 111, 0, 0.6) 50%, transparent 100%);
+    transform: rotate(45deg);
+    animation: shine 2.5s linear infinite;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  @keyframes shine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+  }
+  video {
+    width: 100%; max-width: 600px; border-radius: 15px;
+    box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00;
+    position: relative; display: none; background: #121212;
+  }
+  
+  #result {
+    margin-top: 40px; font-size: 1.5rem; font-weight: 700; display: none;
+    flex-direction: column; align-items: center; gap: 20px;
+    color: #ff6f00;
+    user-select: text;
+  }
+  #result a { color: #ffb347; text-decoration: none; font-weight: 900; word-break: break-word; transition: text-shadow 0.3s ease; }
+  #result a:hover {  
+    color: #ff6f00;
+   }
+  
+  .overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(18, 18, 18, 0.95); color: #ff6f00;
+    display: none; flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: auto;
+    align-items: center;
+    padding: 40px 25px;
+    text-align: center; z-index: 9999; user-select: text;
+    font-size: 1.8rem; line-height: 1.5;
+    border: 4px solid #ff6f00; border-radius: 15px; max-width: 600px; margin: 80px auto;
+  }
+  .overlay button {
+      margin-top: 20px;
+      margin-bottom: 10px;
+  }
+
+  .contact-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px 10px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #ff6f00;
+  }
+  
+  /* MODIFICATION 1 : La règle qui enlevait la bordure du dernier élément a été supprimée */
+  /*
+  .contact-row:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 20px;
+  }
+  */
+
+  .contact-info {
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    word-break: normal;
+    margin-bottom: 20px;  
+  }
+  .contact-info span {
+    font-size: 1rem;
+    color: #ffb347;
+    text-transform: uppercase;
+  }
+  .contact-action button {
+    margin: 0;
+    padding: 12px 15px;
+    font-size: 1.1rem;
+    width: 100%;
+    max-width: 350px;  
+  }
+  
+  .overlay-content {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 100%;
+  }
+  .overlay-email {
+    font-size: 1.5rem;
+    color: #ffb347;
+    margin-bottom: 25px;
+    font-weight: bold;
+    word-break: break-all;
+  }
+  .overlay-instructions {
+      margin: 0;
+  }
+  
+  @media (max-width: 480px) {
+    .overlay {
+        border-radius: 0;
+        border: none;
+        margin: 0;
+        padding: 40px 20px;
+    }
+
+    .contact-row {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    .contact-info {
+        margin-bottom: 15px;
+    }
+    
+    .overlay-content {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    .overlay-email {
+        font-size: 1.2rem;
+    }
+
+    .contact-info span {
+        font-size: 0.85rem;
+    }
+
+    .contact-action button {
+        font-size: 1rem;
+        padding: 12px 10px;
+    }
+  }
+
+</style>
+</head>
+<body>
+  <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
+  <main>
+    <button id="hoursBtn">HEURES D'OUVERTURE</button>
+    <button id="startBtn">IMPRIMER SUR PLACE</button>  
+    <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDER EN LIGNE</a>
+    <button id="mailBtn">COMMANDER PAR MAIL</button>
+    <button id="contactsBtn">CONTACTS</button>
+    
+    <video id="video" playsinline autoplay muted></video>
+    
+    <div id="scanInstruction" style="display:none; position: absolute; top: 20%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px 20px; border-radius: 10px; border: 1px solid #ffb347; text-align: center; font-size: 1.1rem; z-index: 10; width: 90%; line-height: 1.4;">
+        Sur le PC en face de vous, double-cliquez sur l'icône "SCAN QR Code".<br>Un code QR va apparaître sur l'écran du PC.
+    </div>
+
+    <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
+    <div id="result"></div>
+  </main>
+
+  <div id="hoursOverlay" class="overlay">
+    <div>À PARTIR DU 04/08/25<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div>
+    <button id="closeHoursBtn">FERMER</button>
+  </div>
+  
+  <div id="mailOverlay" class="overlay">
+    <div style="font-size: clamp(1rem, 5vw, 1.8rem); word-break: break-word; text-align: center; max-width: 100%;">FACOPYBXL@PROXIMUS.BE</div>
+    <br>
+    <button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button>
+    <button id="closeMailBtn">FERMER</button>
+  </div>
+  
+  <div id="printOverlay" class="overlay">
+    <button id="startMailProcessBtn">ENVOYER PAR MAIL</button>
+    <button id="scanBtn">ENVOYER PAR QR CODE</button>
+    <button id="closePrintBtn">FERMER</button>
+  </div>
+
+  <div id="selfServiceMailOverlay" class="overlay">
+    <div class="overlay-content">
+      <div class="overlay-email">
+          UNIFCOPY@OUTLOOK.COM
+      </div>
+      <p class="overlay-instructions">
+          Cliquez sur le bouton ci-dessous pour nous envoyer vos fichiers par e-mail.<br><br>
+          Ensuite, pour imprimer, allez sur le PC et double-cliquez sur l'icône <strong>BOITE DE RECEPTION</strong> [enveloppe orange].<br><br>
+          Patienter jusqu'à la réception de votre mail.
+      </p>
+    </div>
+    <button id="sendFilesBtn">ENVOYER MES FICHIERS</button>
+    <button id="cancelMailProcessBtn">ANNULER</button>
+  </div>
+  
+  <div id="contactsOverlay" class="overlay">
+      <div class="contact-row">
+          <div class="contact-info">
+              <span>TELEPHONE :</span><br>
+              02 461 30 05
+          </div>
+          <div class="contact-action">
+              <button id="callBtn">APPELER</button>
+          </div>
+      </div>
+      <div class="contact-row">
+          <div class="contact-info">
+                <span>MAIL :</span><br>
+                FACOPYBXL@PROXIMUS.BE
+          </div>
+          <div class="contact-action">
+              <button id="askQuestionBtn">POSER UNE QUESTION</button>
+          </div>
+      </div>
+      <button id="closeContactsBtn" style="width: auto; font-size: 1rem; padding: 10px 35px; margin-top: 40px;">RETOUR</button>
   </div>
 
 
