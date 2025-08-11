@@ -116,6 +116,18 @@
     box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00;
     position: relative; display: none; background: #121212;
   }
+  
+  /* MODIFICATION : Les styles pour #result ont été restaurés ici */
+  #result {
+    margin-top: 40px; font-size: 1.5rem; font-weight: 700; display: none;
+    flex-direction: column; align-items: center; gap: 20px;
+    color: #ff6f00;
+    text-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347, 0 0 25px #ff6f00, 0 0 40px #ffb347;
+    user-select: text;
+  }
+  #result a { color: #ffb347; text-decoration: none; font-weight: 900; word-break: break-word; transition: text-shadow 0.3s ease; }
+  #result a:hover { text-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347; }
+  
   .overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(18, 18, 18, 0.95); color: #ff6f00;
@@ -146,7 +158,7 @@
     </div>
 
     <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
-    <div id="result" style="display: none;"></div>
+    <div id="result"></div>
   </main>
 
   <div id="hoursOverlay" class="overlay">
