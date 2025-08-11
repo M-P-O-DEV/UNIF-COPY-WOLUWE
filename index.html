@@ -196,129 +196,87 @@
   const resultDiv = document.getElementById('result');
   const hoursOverlay = document.getElementById('hoursOverlay');
   const closeHoursBtn = document.getElementById('closeHoursBtn');
-  let stream, scanning = false;
 
-  hoursBtn.addEventListener('click', () => {
-    hoursOverlay.style.display = 'flex';
-    startBtn.style.display = 'none';
-    orderBtn.style.display = 'none';
-    hoursBtn.style.display = 'none';
-    video.style.display = 'none';
-    cancelBtn.style.display = 'none';
-    resultDiv.style.display = 'none';
-  });
+  closeHoursBtn.addEventListener('click', () => { hoursOverlay.style.display = 'none'; });
+  hoursBtn.addEventListener('click', () => { hoursOverlay.style.display = 'flex'; });
 
-  closeHoursBtn.addEventListener('click', () => {
-    hoursOverlay.style.display = 'none';
-    startBtn.style.display = 'inline-block';
-    orderBtn.style.display = 'inline-block';
-    hoursBtn.style.display = 'inline-block';
-  });
+  let scanning = false;
+  let videoStream = null;
 
-  startBtn.addEventListener('click', startCamera);
-  cancelBtn.addEventListener('click', () => {
-    scanning = false;
-    stopCamera();
-    resetScan();
-  });
+  startBtn.addEventListener('click', () => { startCamera(); });
+  cancelBtn.addEventListener('click', () => { resetScan(); });
 
   async function startCamera() {
     startBtn.style.display = 'none';
     orderBtn.style.display = 'none';
     hoursBtn.style.display = 'none';
+    mailBtn.style.display = 'none';  // <-- On cache le bouton mail ici
     resultDiv.style.display = 'none';
     video.style.display = 'block';
     cancelBtn.style.display = 'inline-block';
 
     try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: "environment" } },
-        audio: false
-      });
+      videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = videoStream;
+      scanning = true;
+      scanLoop();
     } catch (err) {
-      console.warn('Erreur accès caméra, tentative fallback:', err);
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
-          audio: false
-        });
-      } catch (err2) {
-        console.error('Impossible d’accéder à la caméra:', err2);
-        alert('Vérifiez que vous avez autorisé l’accès à la caméra dans votre navigateur.');
-        resetScan();
-        return;
-      }
-    }
-
-    video.srcObject = stream;
-    try { await video.play(); } catch (err) { console.error("Erreur lecture vidéo:", err); }
-
-    scanning = true;
-    scanLoop();
-  }
-
-  function scanLoop() {
-    if (!scanning) return;
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    if (canvas.width === 0 || canvas.height === 0) {
-      requestAnimationFrame(scanLoop);
-      return;
-    }
-
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const code = jsQR(imageData.data, imageData.width, imageData.height);
-
-    if (code) {
-      scanning = false;
-      stopCamera();
-      showResult(code.data);
-    } else {
-      requestAnimationFrame(scanLoop);
-    }
-  }
-
-  function stopCamera() {
-    if (stream) {
-      stream.getTracks().forEach(t => t.stop());
-      stream = null;
-    }
-  }
-
-  function showResult(data) {
-    video.style.display = 'none';
-    cancelBtn.style.display = 'none';
-    resultDiv.style.display = 'flex';
-    if (isURL(data)) {
-      resultDiv.innerHTML = `
-        <a href="${data}" target="_blank" rel="noopener noreferrer">${data}</a>
-        <button onclick="window.open('${data}', '_blank')">SUIVRE LE LIEN</button>
-        <button onclick="resetScan()">RECOMMENCER</button>
-      `;
-    } else {
-      resultDiv.innerHTML = `
-        <div>${data}</div>
-        <button onclick="resetScan()">RECOMMENCER</button>
-      `;
+      alert('Erreur lors de l\'accès à la caméra: ' + err);
+      resetScan();
     }
   }
 
   function resetScan() {
-    resultDiv.style.display = 'none';
+    scanning = false;
+    if (videoStream) {
+      videoStream.getTracks().forEach(track => track.stop());
+      videoStream = null;
+    }
+    video.srcObject = null;
+    video.style.display = 'none';
+    cancelBtn.style.display = 'none';
     startBtn.style.display = 'inline-block';
     orderBtn.style.display = 'inline-block';
     hoursBtn.style.display = 'inline-block';
-    cancelBtn.style.display = 'none';
-    video.style.display = 'none';
+    mailBtn.style.display = 'inline-block';  // <-- On remet le bouton mail visible ici
+    resultDiv.style.display = 'none';
   }
 
-  function isURL(str) {
-    try { new URL(str); return true; }
-    catch { return false; }
+  function scanLoop() {
+    if (!scanning) return;
+
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      const code = jsQR(imageData.data, canvas.width, canvas.height, {
+        inversionAttempts: "dontInvert",
+      });
+
+      if (code) {
+        scanning = false;
+        resultDiv.innerHTML = `<div>QR Code détecté:</div><a href="${code.data}" target="_blank" rel="noopener noreferrer">${code.data}</a>`;
+        resultDiv.style.display = 'flex';
+        cancelBtn.style.display = 'none';
+
+        if (videoStream) {
+          videoStream.getTracks().forEach(track => track.stop());
+          videoStream = null;
+        }
+        video.srcObject = null;
+        video.style.display = 'none';
+        mailBtn.style.display = 'inline-block';  // Remet le bouton mail visible quand le scan est fini
+        startBtn.style.display = 'inline-block';
+        orderBtn.style.display = 'inline-block';
+        hoursBtn.style.display = 'inline-block';
+        return;
+      }
+    }
+    requestAnimationFrame(scanLoop);
   }
 </script>
 </body>
