@@ -117,7 +117,6 @@
     position: relative; display: none; background: #121212;
   }
   
-  /* MODIFICATION : Les styles pour #result ont été restaurés ici */
   #result {
     margin-top: 40px; font-size: 1.5rem; font-weight: 700; display: none;
     flex-direction: column; align-items: center; gap: 20px;
@@ -174,13 +173,28 @@
   </div>
   
   <div id="printOverlay" class="overlay">
-    <button onclick="window.location.href='mailto:UNIFCOPY@OUTLOOK.COM'">ENVOYER PAR MAIL</button>
+    <button id="startMailProcessBtn">ENVOYER PAR MAIL</button>
     <button id="scanBtn">SCANNER LE CODE QR</button>
     <button id="closePrintBtn">FERMER</button>
   </div>
 
+  <div id="selfServiceMailOverlay" class="overlay">
+    <div style="font-size: 1rem; color: #ffb347; margin-bottom: 15px; word-break: break-all;">
+        UNIFCOPY@OUTLOOK.COM
+    </div>
+    <div style="font-size: 1.2rem; line-height: 1.6; max-width: 95%;">
+        Cliquez sur le bouton ci-dessous pour nous envoyer vos fichiers par e-mail.<br><br>
+        Ensuite, pour imprimer, allez sur le PC et double-cliquez sur l'icône **BOITE DE RECEPTION** (enveloppe orange).<br><br>
+        Patienter jusqu'à la réception de votre mail.
+    </div>
+    <button id="sendFilesBtn">ENVOYER MES FICHIERS</button>
+    <button id="cancelMailProcessBtn">ANNULER</button>
+  </div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
+  // --- ÉLÉMENTS DU DOM ---
   const mailBtn = document.getElementById('mailBtn');
   const mailOverlay = document.getElementById('mailOverlay');
   const closeMailBtn = document.getElementById('closeMailBtn');
@@ -196,8 +210,16 @@
   const scanBtn = document.getElementById('scanBtn');
   const closePrintBtn = document.getElementById('closePrintBtn');
   const scanInstruction = document.getElementById('scanInstruction');
+
+  // MODIFICATION : Éléments pour le nouveau menu d'envoi de mail
+  const startMailProcessBtn = document.getElementById('startMailProcessBtn');
+  const selfServiceMailOverlay = document.getElementById('selfServiceMailOverlay');
+  const sendFilesBtn = document.getElementById('sendFilesBtn');
+  const cancelMailProcessBtn = document.getElementById('cancelMailProcessBtn');
+
   let stream, scanning = false;
 
+  // --- FONCTIONS UTILITAIRES ---
   function hideAllMenus() {
     startBtn.style.display = 'none';
     orderBtn.style.display = 'none';
@@ -212,6 +234,7 @@
     mailBtn.style.display = 'inline-block';
   }
 
+  // --- GESTION DES MENUS PRINCIPAUX ---
   mailBtn.addEventListener('click', () => { 
     mailOverlay.style.display = 'flex'; 
     hideAllMenus();
@@ -239,6 +262,25 @@
     showAllMenus();
   });
 
+  // --- GESTION DE L'ENVOI DE MAIL SELF-SERVICE ---
+  startMailProcessBtn.addEventListener('click', () => {
+      printOverlay.style.display = 'none';
+      selfServiceMailOverlay.style.display = 'flex';
+  });
+
+  sendFilesBtn.addEventListener('click', () => {
+      window.location.href = 'mailto:UNIFCOPY@OUTLOOK.COM';
+      selfServiceMailOverlay.style.display = 'none';
+      showAllMenus();
+  });
+  
+  cancelMailProcessBtn.addEventListener('click', () => {
+      selfServiceMailOverlay.style.display = 'none';
+      showAllMenus();
+  });
+
+
+  // --- GESTION DU SCANNER QR CODE ---
   scanBtn.addEventListener('click', startCamera);
   cancelBtn.addEventListener('click', () => {
     scanning = false;
@@ -254,28 +296,18 @@
     scanInstruction.style.display = 'block'; 
 
     try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: "environment" } },
-        audio: false
-      });
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } });
     } catch (err) {
-      console.warn('Erreur accès caméra, tentative fallback:', err);
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
-          audio: false
-        });
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
       } catch (err2) {
-        console.error('Impossible d’accéder à la caméra:', err2);
-        alert('Vérifiez que vous avez autorisé l’accès à la caméra dans votre navigateur.');
+        alert('Impossible d’accéder à la caméra. Vérifiez les autorisations de votre navigateur.');
         resetScan();
         return;
       }
     }
-
     video.srcObject = stream;
     try { await video.play(); } catch (err) { console.error("Erreur lecture vidéo:", err); }
-
     scanning = true;
     scanLoop();
   }
@@ -286,9 +318,9 @@
       return;
     }
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const code = jsQR(imageData.data, imageData.width, imageData.height);
@@ -316,14 +348,14 @@
     resultDiv.style.display = 'flex';
     if (isURL(data)) {
       resultDiv.innerHTML = `
-        <a href="${data}" target="_blank" rel="noopener noreferrer">${data}</a>
-        <button onclick="window.open('${data}', '_blank')">SUIVRE LE LIEN</button>
-        <button onclick="resetScan()">RECOMMENCER</button>
+        <a href="${data}" target="_blank" rel="noopener noreferrer" style="font-size: 1.2rem;">${data}</a>
+        <button onclick="window.open('${data}', '_blank')" style="width:100%;">SUIVRE LE LIEN</button>
+        <button onclick="resetScan()" style="width:100%;">RECOMMENCER</button>
       `;
     } else {
       resultDiv.innerHTML = `
         <div>${data}</div>
-        <button onclick="resetScan()">RECOMMENCER</button>
+        <button onclick="resetScan()" style="width:100%;">RECOMMENCER</button>
       `;
     }
   }
