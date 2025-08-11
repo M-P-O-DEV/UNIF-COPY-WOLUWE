@@ -109,54 +109,64 @@
     0% { transform: translateX(-100%) rotate(45deg); }
     100% { transform: translateX(100%) rotate(45deg); }
   }
-  /* Overlay scanner */
-  #scannerOverlay {
+  video {
+    width: 100%; max-width: 600px; border-radius: 15px;
+    box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00;
+    position: relative; display: none; background: #121212;
+  }
+  video::after {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 100%; height: 4px;
+    background: linear-gradient(90deg, transparent, #ff6f00, #ffb347, #ff6f00, transparent);
+    animation: scanline 3s linear infinite; pointer-events: none;
+    border-radius: 2px; mix-blend-mode: screen;
+  }
+  @keyframes scanline {
+    0% { transform: translateY(-4px); opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0.5; }
+  }
+  #result {
+    margin-top: 40px; font-size: 1.5rem; font-weight: 700; display: none;
+    flex-direction: column; align-items: center; gap: 20px;
+    color: #ff6f00;
+    text-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347, 0 0 25px #ff6f00, 0 0 40px #ffb347;
+    user-select: text;
+  }
+  #result a { color: #ffb347; text-decoration: none; font-weight: 900; word-break: break-word; transition: text-shadow 0.3s ease; }
+  #result a:hover { text-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347; }
+
+  /* Boutons dans la page résultat du lien */
+  #linkPage {
     display: none;
-    position: fixed; top:0; left:0; right:0; bottom:0;
-    background: rgba(18,18,18,0.95);
-    z-index: 10000;
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-  }
-  #scannerOverlay video {
-    width: 90%;
-    max-width: 600px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00;
-    display: block;
-  }
-  #scannerOverlay button {
-    margin-top: 15px;
-    font-size: 1.3rem;
-    padding: 10px 30px;
-    border-radius: 10px;
-  }
-  #result {
+    gap: 15px;
     margin-top: 40px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ff6f00;
-    text-align: center;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    user-select: text;
-    text-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347, 0 0 25px #ff6f00, 0 0 40px #ffb347;
+    max-width: 90vw;
   }
-  #result a {
-    color: #ffb347;
-    text-decoration: none;
+  #linkPage button {
+    width: 80%;
+    max-width: 300px;
+    padding: 14px;
+    font-size: 1.3rem;
     font-weight: 900;
-    word-break: break-word;
-    transition: text-shadow 0.3s ease;
+    border-radius: 10px;
+    border: 3px solid #ff6f00;
+    background: transparent;
+    color: #ff6f00;
+    box-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347, 0 0 30px #ff6f00, 0 0 60px #ffb347;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
   }
-  #result a:hover {
-    text-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347;
+  #linkPage button:hover {
+    color: #ffb347;
+    border-color: #ffb347;
+    box-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347;
   }
+
   #hoursOverlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(18, 18, 18, 0.95); color: #ff6f00; font-family: 'Orbitron', sans-serif;
@@ -182,172 +192,133 @@
     <button id="hoursBtn">HEURES D'OUVERTURE</button>
     <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDE EN LIGNE</a>
     <button id="mailBtn">COMMANDE PAR MAIL</button>
-    <button id="startBtn">SCANNER UN QR CODE</button>
+    <button id="startBtn">SCANNER QR CODE</button>
+
+    <video id="video" playsinline autoplay muted></video>
+    <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
+
+    <div id="result"></div>
+
+    <!-- Page dédiée au lien scanné -->
+    <div id="linkPage">
+      <div id="linkURL" style="color:#ffb347; font-weight:700; word-break: break-word;"></div>
+      <button id="followLinkBtn">SUIVRE LE LIEN</button>
+      <button id="cancelLinkBtn">ANNULER</button>
+    </div>
   </main>
 
-  <!-- Overlay scanner -->
-  <div id="scannerOverlay">
-    <video id="video" playsinline autoplay muted></video>
-    <button id="cancelBtn">ANNULER</button>
-    <div id="result"></div>
-  </div>
-
-  <!-- Overlay heures -->
   <div id="hoursOverlay">
-    <h2>HEURES D’OUVERTURE</h2>
-    <p>Lundi - Vendredi : 8h30 - 18h00</p>
-    <p>Samedi : 9h00 - 12h30</p>
-    <p>Dimanche : Fermé</p>
-    <button id="closeHoursBtn">FERMER</button>
+    <div>
+      <h2>Heures d'ouverture</h2>
+      <p>  
+        Lundi - Vendredi : 10h - 18h<br>
+        Samedi : 10h - 17h<br>
+        Dimanche : Fermé
+      </p>
+      <button id="closeHoursBtn">Fermer</button>
+    </div>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
 <script>
+  const video = document.getElementById('video');
   const startBtn = document.getElementById('startBtn');
   const cancelBtn = document.getElementById('cancelBtn');
-  const video = document.getElementById('video');
-  const scannerOverlay = document.getElementById('scannerOverlay');
+  const mailBtn = document.getElementById('mailBtn');
+  const orderBtn = document.getElementById('orderBtn');
   const resultDiv = document.getElementById('result');
-  const main = document.querySelector('main');
-  const header = document.querySelector('header');
+  const linkPage = document.getElementById('linkPage');
+  const linkURLDiv = document.getElementById('linkURL');
+  const followLinkBtn = document.getElementById('followLinkBtn');
+  const cancelLinkBtn = document.getElementById('cancelLinkBtn');
 
-  let stream = null;
-  let scanning = false;
-  let canvas, context;
-
-  startBtn.addEventListener('click', startCamera);
-  cancelBtn.addEventListener('click', () => {
-    scanning = false;
-    stopCamera();
-    resetScan();
-  });
-
-  // Heures overlay
   const hoursBtn = document.getElementById('hoursBtn');
   const hoursOverlay = document.getElementById('hoursOverlay');
   const closeHoursBtn = document.getElementById('closeHoursBtn');
 
-  hoursBtn.addEventListener('click', () => {
-    hoursOverlay.style.display = 'flex';
-    main.style.filter = 'blur(3px) brightness(0.5)';
-    header.style.filter = 'blur(3px) brightness(0.5)';
-  });
-  closeHoursBtn.addEventListener('click', () => {
-    hoursOverlay.style.display = 'none';
-    main.style.filter = 'none';
-    header.style.filter = 'none';
-  });
+  let scanning = false;
+  let stream = null;
 
-  async function startCamera() {
-    scannerOverlay.style.display = 'flex';
-    main.style.filter = 'blur(3px) brightness(0.5)';
-    header.style.filter = 'blur(3px) brightness(0.5)';
-    resultDiv.style.display = 'none';
-    video.style.display = 'block';
-    cancelBtn.style.display = 'inline-block';
-
-    if (!canvas) {
-      canvas = document.createElement('canvas');
-      context = canvas.getContext('2d');
-    }
-
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: "environment" } },
-        audio: false
-      });
-    } catch (err) {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
-          audio: false
-        });
-      } catch (err2) {
-        alert('Vérifiez que vous avez autorisé l’accès à la caméra dans votre navigateur.');
-        resetScan();
-        return;
-      }
-    }
-
-    video.srcObject = stream;
-    await video.play();
-
-    scanning = true;
-    scanLoop();
-  }
-
-  function stopCamera() {
+  function stopStream() {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
       stream = null;
     }
+    video.style.display = 'none';
+    scanning = false;
+    cancelBtn.style.display = 'none';
+    mailBtn.style.display = 'inline-block'; // remonter bouton mail après scan
   }
 
-  function scanLoop() {
-    if (!scanning) return;
-
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-      if (!canvas) {
-        canvas = document.createElement('canvas');
-        context = canvas.getContext('2d');
-      }
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: 'dontInvert',
-      });
-      if (code) {
-        scanning = false;
-        stopCamera();
-        showResult(code.data);
-        return;
-      }
-    }
-    requestAnimationFrame(scanLoop);
-  }
-
-  function isURL(str) {
+  startBtn.addEventListener('click', async () => {
     try {
-      new URL(str);
-      return true;
-    } catch {
-      return false;
-    }
-  }
+      // Démarrer la caméra
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = stream;
+      video.style.display = 'block';
+      scanning = true;
+      mailBtn.style.display = 'none'; // cacher bouton mail pendant scan
+      resultDiv.style.display = 'none';
+      linkPage.style.display = 'none';
+      cancelBtn.style.display = 'inline-block';
+      startBtn.style.display = 'none'; // cacher bouton scan pour éviter double clic
 
-  function showResult(data) {
-    video.style.display = 'none';
-    cancelBtn.style.display = 'none';
-    resultDiv.style.display = 'flex';
-    if (isURL(data)) {
-      resultDiv.innerHTML = `
-        <a href="${data}" target="_blank" rel="noopener noreferrer">${data}</a>
-        <button onclick="window.open('${data}', '_blank')">SUIVRE LE LIEN</button>
-        <button onclick="resetScan()">RECOMMENCER</button>
-      `;
-    } else {
-      resultDiv.innerHTML = `
-        <div>${data}</div>
-        <button onclick="resetScan()">RECOMMENCER</button>
-      `;
+      scanQRCode();
+    } catch (e) {
+      alert('Erreur accès caméra : ' + e.message);
     }
-  }
+  });
 
-  function resetScan() {
-    scannerOverlay.style.display = 'none';
-    video.style.display = 'none';
-    cancelBtn.style.display = 'none';
+  cancelBtn.addEventListener('click', () => {
+    stopStream();
+    startBtn.style.display = 'inline-block';
     resultDiv.style.display = 'none';
-    main.style.filter = 'none';
-    header.style.filter = 'none';
+  });
+
+  // Fonction de scan QR code
+  async function scanQRCode() {
+    if (!scanning) return;
+    if (video.readyState !== video.HAVE_ENOUGH_DATA) {
+      requestAnimationFrame(scanQRCode);
+      return;
+    }
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, canvas.width, canvas.height);
+    if (code) {
+      stopStream();
+
+      // Afficher la page du lien scanné
+      linkURLDiv.textContent = code.data;
+      linkPage.style.display = 'flex';
+
+      // Réinitialiser bouton scan
+      startBtn.style.display = 'inline-block';
+    } else {
+      requestAnimationFrame(scanQRCode);
+    }
   }
 
-  // Mail button functionality (unchanged)
-  const mailBtn = document.getElementById('mailBtn');
-  mailBtn.addEventListener('click', () => {
-    window.location.href = 'mailto:commande@unif-copy.be';
+  // Boutons dans page lien
+  followLinkBtn.addEventListener('click', () => {
+    const url = linkURLDiv.textContent;
+    if (url) window.open(url, '_blank', 'noopener');
+  });
+  cancelLinkBtn.addEventListener('click', () => {
+    linkPage.style.display = 'none';
+    resultDiv.style.display = 'none';
+  });
+
+  // Heures d'ouverture
+  hoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'flex';
+  });
+  closeHoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'none';
   });
 </script>
 </body>
