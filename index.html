@@ -145,6 +145,13 @@
     border: 4px solid #ff6f00; border-radius: 15px; max-width: 600px; margin: 80px auto;
   }
   #hoursOverlay button { margin-top: 30px; font-size: 1.3rem; padding: 10px 30px; }
+  /* Email responsive */
+  .mail-address {
+    font-size: clamp(1rem, 5vw, 1.8rem);
+    word-break: break-word;
+    text-align: center;
+    max-width: 100%;
+  }
 </style>
 </head>
 <body>
@@ -152,10 +159,9 @@
   <main>
     <button id="hoursBtn">HEURES D'OUVERTURE</button>
     <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDE EN LIGNE</a>
-    <!-- Nouveau bouton -->
     <button id="mailBtn">COMMANDE PAR MAIL</button>
     <button id="startBtn">SCANNER QR CODE</button>
-    <video id="video" playsinline></video>
+    <video id="video" playsinline autoplay muted></video>
     <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
     <div id="result"></div>
   </main>
@@ -167,9 +173,9 @@
 
   <!-- Overlay mail -->
   <div id="mailOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(18,18,18,0.95); color:#ff6f00; font-family:'Orbitron',sans-serif; display:none; flex-direction:column; justify-content:center; align-items:center; padding:40px 30px; text-align:center; z-index:9999; user-select:text; text-shadow:0 0 10px #ff6f00,0 0 20px #ffb347,0 0 40px #ff6f00; font-size:1.8rem; line-height:1.5; border:4px solid #ff6f00; border-radius:15px; max-width:600px; margin:80px auto;">
-    <div>FACOPYBXL@PROXIMUS.BE<br><br>
-      <button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button>
-    </div>
+    <div class="mail-address">FACOPYBXL@PROXIMUS.BE</div>
+    <br>
+    <button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button>
     <button id="closeMailBtn" style="margin-top:30px; font-size:1.3rem; padding:10px 30px;">FERMER</button>
   </div>
 
@@ -182,7 +188,6 @@
   mailBtn.addEventListener('click', () => { mailOverlay.style.display = 'flex'; });
   closeMailBtn.addEventListener('click', () => { mailOverlay.style.display = 'none'; });
 
-  /* --- Code original intact ci-dessous --- */
   const hoursBtn = document.getElementById('hoursBtn');
   const orderBtn = document.getElementById('orderBtn');
   const startBtn = document.getElementById('startBtn');
@@ -214,12 +219,7 @@
   cancelBtn.addEventListener('click', () => {
     scanning = false;
     stopCamera();
-    cancelBtn.style.display = 'none';
-    video.style.display = 'none';
-    startBtn.style.display = 'inline-block';
-    orderBtn.style.display = 'inline-block';
-    hoursBtn.style.display = 'inline-block';
-    resultDiv.style.display = 'none';
+    resetScan();
   });
 
   async function startCamera() {
@@ -231,28 +231,30 @@
     cancelBtn.style.display = 'inline-block';
 
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { exact: "environment" } },
+        audio: false
+      });
     } catch (err) {
-      console.error('Erreur accès caméra:', err);
+      console.warn('Erreur accès caméra, tentative fallback:', err);
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false
+        });
       } catch (err2) {
-        console.error('Erreur fallback caméra:', err2);
-        alert('Impossible d\'accéder à la caméra. Veuillez vérifier les permissions.');
-        startBtn.style.display = 'inline-block';
-        orderBtn.style.display = 'inline-block';
-        hoursBtn.style.display = 'inline-block';
-        video.style.display = 'none';
-        cancelBtn.style.display = 'none';
+        console.error('Impossible d’accéder à la caméra:', err2);
+        alert('Vérifiez que vous avez autorisé l’accès à la caméra dans votre navigateur.');
+        resetScan();
         return;
       }
     }
+
     video.srcObject = stream;
-    video.play();
-    video.onloadedmetadata = () => {
-      scanning = true;
-      scanLoop();
-    };
+    try { await video.play(); } catch (err) { console.error("Erreur lecture vidéo:", err); }
+
+    scanning = true;
+    scanLoop();
   }
 
   function scanLoop() {
@@ -310,6 +312,8 @@
     startBtn.style.display = 'inline-block';
     orderBtn.style.display = 'inline-block';
     hoursBtn.style.display = 'inline-block';
+    cancelBtn.style.display = 'none';
+    video.style.display = 'none';
   }
 
   function isURL(str) {
