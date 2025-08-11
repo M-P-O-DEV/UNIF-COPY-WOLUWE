@@ -147,8 +147,8 @@
     margin-bottom: 0;
     border-bottom: 1px solid #ff6f00;
   }
+  /* MODIFICATION : La règle qui enlevait la bordure sur le dernier élément a été supprimée */
   .contact-row:last-of-type {
-    border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 20px;
   }
@@ -171,6 +171,18 @@
     width: 100%;
     max-width: 350px; 
   }
+  #contactsOverlay > button {
+      width: 100%;
+      max-width: 350px;
+      font-size: 1.1rem;
+      padding: 12px 15px;
+      margin-top: 10px;
+  }
+  
+  #closeContactsBtn {
+      width: auto;
+  }
+
 </style>
 </head>
 <body>
@@ -242,7 +254,7 @@
               <button id="askQuestionBtn">POSER UNE QUESTION</button>
           </div>
       </div>
-      <button id="closeContactsBtn" style="width: auto; font-size: 1.1rem; padding: 10px 40px;">RETOUR</button>
+      <button id="closeContactsBtn">RETOUR</button>
   </div>
 
 
