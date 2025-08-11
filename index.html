@@ -141,8 +141,8 @@
     
     <video id="video" playsinline autoplay muted></video>
     
-    <div id="scanInstruction" style="display:none; position: absolute; top: 15%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #ffb347; padding: 10px 15px; border-radius: 10px; border: 1px solid #ffb347; text-align: center; font-size: 1rem; z-index: 10;">
-        VISEZ LE CODE SUR L'ÉCRAN DU PC
+    <div id="scanInstruction" style="display:none; position: absolute; top: 20%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px 20px; border-radius: 10px; border: 1px solid #ffb347; text-align: center; font-size: 1.1rem; z-index: 10; width: 90%; line-height: 1.4;">
+        Sur le PC en face de vous, double-cliquez sur l'icône "SCAN QR Code".<br>Un code QR va apparaître sur l'écran du PC.
     </div>
 
     <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
@@ -162,13 +162,6 @@
   </div>
   
   <div id="printOverlay" class="overlay">
-    <div style="font-size: 1.1rem; line-height: 1.5; margin-bottom: 25px; text-align: left; max-width: 90%;">
-      <b>POUR COMMENCER :</b><br>
-      1. Sur le PC, double-cliquez sur l'icône noire <b>"SCAN QR CODE"</b>.<br>
-      2. Un code QR va apparaître sur l'écran du PC.<br>
-      3. Cliquez ensuite sur "SCANNER LE CODE QR" ci-dessous.
-    </div>
-  
     <button onclick="window.location.href='mailto:UNIFCOPY@OUTLOOK.COM'">ENVOYER PAR MAIL</button>
     <button id="scanBtn">SCANNER LE CODE QR</button>
     <button id="closePrintBtn">FERMER</button>
