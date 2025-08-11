@@ -156,7 +156,7 @@
     text-align: center;
     font-size: 1.2rem;
     line-height: 1.4;
-    word-break: normal; /* CORRECTION 1 : Empêche de couper l'e-mail */
+    word-break: normal;
     margin-bottom: 20px;  
   }
   .contact-info span {
@@ -172,10 +172,35 @@
     max-width: 350px;  
   }
   
-  /* CORRECTION 3 : AJOUT D'UN BLOC POUR LES PETITS ÉCRANS */
+  /* NOUVELLES RÈGLES CSS POUR LE CONTENU DES OVERLAYS */
+  .overlay-content {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 100%; /* Ajusté pour prendre la largeur du parent */
+  }
+  .overlay-email {
+    font-size: 1.5rem;
+    color: #ffb347;
+    margin-bottom: 25px;
+    font-weight: bold;
+    word-break: break-all; /* Permet à l'email de se couper si besoin */
+  }
+  .overlay-instructions {
+      margin: 0;
+  }
+  
   @media (max-width: 480px) {
     .contact-row .contact-info {
-        font-size: 1rem; /* Réduit la police pour que l'email tienne */
+        font-size: 1rem;
+    }
+
+    /* RÈGLES AJOUTÉES POUR L'AJUSTEMENT DU TEXTE SUR MOBILE */
+    .overlay-content {
+        font-size: 1rem; /* Police plus petite pour les instructions */
+        line-height: 1.5;
+    }
+    .overlay-email {
+        font-size: 1.2rem; /* Police de l'email un peu plus petite aussi */
     }
   }
 
@@ -219,13 +244,15 @@
   </div>
 
   <div id="selfServiceMailOverlay" class="overlay">
-    <div style="font-size: 1.2rem; line-height: 1.6; max-width: 95%;">
-        <div style="font-size: 1.5rem; color: #ffb347; margin-bottom: 25px; font-weight: bold; word-break: break-all;">
-            UNIFCOPY@OUTLOOK.COM
-        </div>
-        Cliquez sur le bouton ci-dessous pour nous envoyer vos fichiers par e-mail.<br><br>
-        Ensuite, pour imprimer, allez sur le PC et double-cliquez sur l'icône **BOITE DE RECEPTION** [enveloppe orange].<br><br>
-        Patienter jusqu'à la réception de votre mail.
+    <div class="overlay-content">
+      <div class="overlay-email">
+          UNIFCOPY@OUTLOOK.COM
+      </div>
+      <p class="overlay-instructions">
+          Cliquez sur le bouton ci-dessous pour nous envoyer vos fichiers par e-mail.<br><br>
+          Ensuite, pour imprimer, allez sur le PC et double-cliquez sur l'icône <strong>BOITE DE RECEPTION</strong> [enveloppe orange].<br><br>
+          Patienter jusqu'à la réception de votre mail.
+      </p>
     </div>
     <button id="sendFilesBtn">ENVOYER MES FICHIERS</button>
     <button id="cancelMailProcessBtn">ANNULER</button>
@@ -250,7 +277,7 @@
               <button id="askQuestionBtn">POSER UNE QUESTION</button>
           </div>
       </div>
-      <button id="closeContactsBtn" style="width: auto; font-size: 1rem; padding: 10px 35px;">RETOUR</button>
+      <button id="closeContactsBtn" style="width: auto; font-size: 1rem; padding: 10px 35px; margin-top: 25px;">RETOUR</button>
   </div>
 
 
