@@ -137,27 +137,27 @@
      margin-bottom: 10px;
   }
 
-  /* MODIFICATION : Styles pour la nouvelle mise en page verticale des contacts */
+  /* MODIFICATION : Ajustement des styles pour le panneau Contacts */
   .contact-row {
     display: flex;
-    flex-direction: column; /* Mise en page verticale */
-    align-items: center; /* Centrage des éléments */
+    flex-direction: column;
+    align-items: center;
     width: 100%;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
+    padding: 20px 10px; /* Espacement vertical amélioré */
+    margin-bottom: 0;
     border-bottom: 1px solid #ff6f00;
   }
   .contact-row:last-of-type {
     border-bottom: none;
     margin-bottom: 0;
-    padding-bottom: 0;
+    padding-bottom: 20px;
   }
   .contact-info {
-    text-align: center; /* Texte centré */
+    text-align: center;
     font-size: 1.2rem;
     line-height: 1.4;
     word-break: break-all;
-    margin-bottom: 15px; /* Espace entre le texte et le bouton */
+    margin-bottom: 20px; 
   }
   .contact-info span {
     font-size: 1rem;
@@ -166,11 +166,20 @@
   }
   .contact-action button {
     margin: 0;
-    padding: 10px 15px;
+    padding: 12px 15px; /* Padding ajusté */
     font-size: 1.1rem;
     width: 100%;
-    max-width: 350px; /* Largeur maximale pour une bonne lisibilité */
+    max-width: 350px; 
   }
+  /* Cible le bouton "FERMER" spécifiquement dans le panneau contacts pour l'harmoniser */
+  #contactsOverlay > button {
+      width: 100%;
+      max-width: 350px;
+      font-size: 1.1rem;
+      padding: 12px 15px;
+      margin-top: 10px;
+  }
+
 
 </style>
 </head>
