@@ -172,18 +172,17 @@
     max-width: 350px;  
   }
   
-  /* NOUVELLES RÈGLES CSS POUR LE CONTENU DES OVERLAYS */
   .overlay-content {
     font-size: 1.2rem;
     line-height: 1.6;
-    max-width: 100%; /* Ajusté pour prendre la largeur du parent */
+    max-width: 100%;
   }
   .overlay-email {
     font-size: 1.5rem;
     color: #ffb347;
     margin-bottom: 25px;
     font-weight: bold;
-    word-break: break-all; /* Permet à l'email de se couper si besoin */
+    word-break: break-all;
   }
   .overlay-instructions {
       margin: 0;
@@ -194,13 +193,23 @@
         font-size: 1rem;
     }
 
-    /* RÈGLES AJOUTÉES POUR L'AJUSTEMENT DU TEXTE SUR MOBILE */
     .overlay-content {
-        font-size: 1rem; /* Police plus petite pour les instructions */
+        font-size: 1rem;
         line-height: 1.5;
     }
     .overlay-email {
-        font-size: 1.2rem; /* Police de l'email un peu plus petite aussi */
+        font-size: 1.2rem;
+    }
+
+    /* CORRECTION 1 : Ajustement des libellés dans "Contacts" */
+    .contact-info span {
+        font-size: 0.85rem; /* Police réduite pour éviter le retour à la ligne */
+    }
+
+    /* CORRECTION 2 : Ajustement des boutons dans "Contacts" */
+    .contact-action button {
+        font-size: 1rem; /* Police réduite pour le texte des boutons */
+        padding: 12px 10px; /* Moins de remplissage pour laisser de la place au texte */
     }
   }
 
