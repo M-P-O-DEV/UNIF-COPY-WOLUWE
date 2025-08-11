@@ -136,35 +136,58 @@
   #result a { color: #ffb347; text-decoration: none; font-weight: 900; word-break: break-word; transition: text-shadow 0.3s ease; }
   #result a:hover { text-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347; }
   
-  /* --- STYLES POUR LES OVERLAYS (SOUS-MENUS) --- */
-  #hoursOverlay, #printOverlay { /* <button id="startBtn">IMPRIMER SUR PLACE</button> 
+  .overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(18, 18, 18, 0.95); color: #ff6f00; font-family: 'Orbitron', sans-serif;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    padding: 40px 30px; text-align: center; z-index: 9999; user-select: text;
+    text-shadow: 0 0 10px #ff6f00, 0 0 20px #ffb347, 0 0 40px #ff6f00;
+    font-size: 1.8rem; line-height: 1.5;
+    border: 4px solid #ff6f00; border-radius: 15px; max-width: 600px; margin: 80px auto;
+  }
+  .overlay button {
+     margin-top: 30px; font-size: 1.3rem; padding: 10px 30px; 
+  }
+  .mail-address {
+    font-size: clamp(1rem, 5vw, 1.8rem);
+    word-break: break-word;
+    text-align: center;
+    max-width: 100%;
+  }
+</style>
+</head>
+<body>
+  <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
+  <main>
+    <button id="hoursBtn">HEURES D'OUVERTURE</button>
+    <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDE EN LIGNE</a>
+    <button id="mailBtn">COMMANDE PAR MAIL</button>
+    <button id="startBtn">IMPRIMER SUR PLACE</button> 
     
     <video id="video" playsinline autoplay muted></video>
     <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
     <div id="result"></div>
   </main>
 
-  <div id="hoursOverlay">
+  <div id="hoursOverlay" class="overlay">
     <div>A partir du 04/08/25<br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div>
     <button id="closeHoursBtn">FERMER</button>
   </div>
   
-  <div id="mailOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(18,18,18,0.95); color:#ff6f00; font-family:'Orbitron',sans-serif; display:none; flex-direction:column; justify-content:center; align-items:center; padding:40px 30px; text-align:center; z-index:9999; user-select:text; text-shadow:0 0 10px #ff6f00,0 0 20px #ffb347,0 0 40px #ff6f00; font-size:1.8rem; line-height:1.5; border:4px solid #ff6f00; border-radius:15px; max-width:600px; margin:80px auto;">
+  <div id="mailOverlay" class="overlay">
     <div class="mail-address">FACOPYBXL@PROXIMUS.BE</div>
     <br>
     <button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button>
-    <button id="closeMailBtn" style="margin-top:30px; font-size:1.3rem; padding:10px 30px;">FERMER</button>
+    <button id="closeMailBtn">FERMER</button>
   </div>
   
-  <div id="printOverlay">
+  <div id="printOverlay" class="overlay">
     <button id="scanBtn">SCANNER QR CODE</button>
     <button id="closePrintBtn">FERMER</button>
   </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
-  // --- GESTION DES CONSTANTES (ELEMENTS HTML) ---
   const mailBtn = document.getElementById('mailBtn');
   const mailOverlay = document.getElementById('mailOverlay');
   const closeMailBtn = document.getElementById('closeMailBtn');
@@ -175,63 +198,54 @@
   const video = document.getElementById('video');
   const resultDiv = document.getElementById('result');
   const cancelBtn = document.getElementById('cancelBtn');
-  let stream, scanning = false;
-  
-  // MODIFICATION : Constantes pour le nouveau sous-menu "Imprimer sur Place"
-  const startBtn = document.getElementById('startBtn'); // Ce bouton ouvre maintenant le sous-menu
+  const startBtn = document.getElementById('startBtn');
   const printOverlay = document.getElementById('printOverlay');
-  const scanBtn = document.getElementById('scanBtn'); // Ce bouton lance maintenant le scan
+  const scanBtn = document.getElementById('scanBtn');
   const closePrintBtn = document.getElementById('closePrintBtn');
+  let stream, scanning = false;
 
-  // --- GESTION DES EVENEMENTS (CLICS) ---
-
-  // Overlay Mail
-  mailBtn.addEventListener('click', () => { mailOverlay.style.display = 'flex'; });
-  closeMailBtn.addEventListener('click', () => { mailOverlay.style.display = 'none'; });
-
-  // Overlay Heures d'Ouverture
-  hoursBtn.addEventListener('click', () => {
-    hoursOverlay.style.display = 'flex';
-    // On cache les boutons du menu principal
+  function hideAllMenus() {
     startBtn.style.display = 'none';
     orderBtn.style.display = 'none';
     hoursBtn.style.display = 'none';
     mailBtn.style.display = 'none';
+  }
+
+  function showAllMenus() {
+    startBtn.style.display = 'inline-block';
+    orderBtn.style.display = 'inline-block';
+    hoursBtn.style.display = 'inline-block';
+    mailBtn.style.display = 'inline-block';
+  }
+
+  mailBtn.addEventListener('click', () => { 
+    mailOverlay.style.display = 'flex'; 
+    hideAllMenus();
+  });
+  closeMailBtn.addEventListener('click', () => { 
+    mailOverlay.style.display = 'none'; 
+    showAllMenus();
+  });
+
+  hoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'flex';
+    hideAllMenus();
   });
   closeHoursBtn.addEventListener('click', () => {
     hoursOverlay.style.display = 'none';
-    // On ré-affiche les boutons du menu principal
-    startBtn.style.display = 'inline-block';
-    orderBtn.style.display = 'inline-block';
-    hoursBtn.style.display = 'inline-block';
-    mailBtn.style.display = 'inline-block';
+    showAllMenus();
   });
 
-  // MODIFICATION : Overlay "Imprimer sur Place"
   startBtn.addEventListener('click', () => {
     printOverlay.style.display = 'flex';
-    // On cache les boutons du menu principal
-    startBtn.style.display = 'none';
-    orderBtn.style.display = 'none';
-    hoursBtn.style.display = 'none';
-    mailBtn.style.display = 'none';
+    hideAllMenus();
   });
   closePrintBtn.addEventListener('click', () => {
     printOverlay.style.display = 'none';
-    // On ré-affiche les boutons du menu principal
-    startBtn.style.display = 'inline-block';
-    orderBtn.style.display = 'inline-block';
-    hoursBtn.style.display = 'inline-block';
-    mailBtn.style.display = 'inline-block';
+    showAllMenus();
   });
 
-
-  // --- GESTION DU SCANNER QR CODE ---
-
-  // Le clic sur "SCANNER QR CODE" (dans le sous-menu) lance la caméra
   scanBtn.addEventListener('click', startCamera);
-
-  // Le clic sur "ANNULER" (pendant le scan) arrête tout
   cancelBtn.addEventListener('click', () => {
     scanning = false;
     stopCamera();
@@ -239,7 +253,6 @@
   });
 
   async function startCamera() {
-    // On cache le sous-menu "Imprimer" et on affiche la vidéo
     printOverlay.style.display = 'none'; 
     resultDiv.style.display = 'none';
     video.style.display = 'block';
@@ -319,15 +332,11 @@
     }
   }
 
-  // Remet l'interface à l'état initial (menu principal)
   function resetScan() {
     resultDiv.style.display = 'none';
     cancelBtn.style.display = 'none';
     video.style.display = 'none';
-    startBtn.style.display = 'inline-block';
-    orderBtn.style.display = 'inline-block';
-    hoursBtn.style.display = 'inline-block';
-    mailBtn.style.display = 'inline-block';
+    showAllMenus();
   }
 
   function isURL(str) {
