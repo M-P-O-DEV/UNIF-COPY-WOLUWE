@@ -151,15 +151,6 @@
     border-bottom: 1px solid #ff6f00;
   }
   
-  /* MODIFICATION 1 : La règle qui enlevait la bordure du dernier élément a été supprimée */
-  /*
-  .contact-row:last-of-type {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 20px;
-  }
-  */
-
   .contact-info {
     text-align: center;
     font-size: 1.2rem;
@@ -228,6 +219,11 @@
         font-size: 1rem;
         padding: 12px 10px;
     }
+
+    /* MODIFICATION CSS : Règle ajoutée pour les boutons du menu d'impression */
+    #printOverlay button {
+        font-size: 1.1rem;
+    }
   }
 
 </style>
@@ -265,7 +261,7 @@
   
   <div id="printOverlay" class="overlay">
     <button id="startMailProcessBtn">ENVOYER PAR MAIL</button>
-    <button id="scanBtn">ENVOYER PAR QR CODE</button>
+    <button id="scanBtn">ENVOYER PAR QR&nbsp;CODE</button>
     <button id="closePrintBtn">FERMER</button>
   </div>
 
