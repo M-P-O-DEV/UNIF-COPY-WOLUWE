@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UNIF-COPY WOLUWE - QR Scan Cyberpunk Orange</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+  /* Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #1a1a1a, #2f2f2f, #121212);
+    font-family: 'Orbitron', sans-serif;
+    color: #ff6f00; /* warm orange */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    user-select: none;
+  }
+
+  /* Header with glitch & warm orange */
+  header {
+    width: 100%;
+    padding: 25px 0;
+    background: linear-gradient(90deg, #ff6f00, #ffb347);
+    color: black;
+    font-size: 2.8rem;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    animation: flicker 3s infinite alternate;
+    border-bottom: 4px solid #ff6f00;
+  }
+  header::before, header::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    color: #ff6f00;
+    opacity: 0.7;
+    clip-path: polygon(0 2%, 100% 2%, 100% 8%, 0 8%);
+    animation: glitchTop 2s infinite linear alternate-reverse;
+  }
+  header::after {
+    color: #ffb347;
+    clip-path: polygon(0 85%, 100% 85%, 100% 90%, 0 90%);
+    animation: glitchBottom 3s infinite linear alternate;
+  }
+
+  @keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+      opacity: 1;
+      text-shadow:
+        0 0 8px #ff6f00,
+        0 0 16px #ffb347,
+        0 0 24px #ff6f00,
+        0 0 32px #ffb347;
+    }
+    20%, 22%, 24%, 55% {
+      opacity: 0.6;
+      text-shadow: none;
+    }
+  }
+  @keyframes glitchTop {
+    0% {
+      transform: translate(0);
+      opacity: 0.7;
+    }
+    20% {
+      transform: translate(-2px, -2px);
+      opacity: 0.4;
+    }
+    40% {
+      transform: translate(2px, 2px);
+      opacity: 0.7;
+    }
+    60% {
+      transform: translate(-2px, 2px);
+      opacity: 0.4;
+    }
+    80% {
+      transform: translate(2px, -2px);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translate(0);
+      opacity: 0.7;
+    }
+  }
+  @keyframes glitchBottom {
+    0% {
+      transform: translate(0);
+      opacity: 0.7;
+    }
+    20% {
+      transform: translate(2px, 2px);
+      opacity: 0.4;
+    }
+    40% {
+      transform: translate(-2px, -2px);
+      opacity: 0.7;
+    }
+    60% {
+      transform: translate(2px, -2px);
+      opacity: 0.4;
+    }
+    80% {
+      transform: translate(-2px, 2px);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translate(0);
+      opacity: 0.7;
+    }
+  }
+
+  main {
+    width: 100%;
+    max-width: 640px;
+    padding: 30px 25px;
+    text-align: center;
+  }
+
+  /* Cyberpunk orange buttons */
+  button, .link-button {
+    position: relative;
+    background: transparent;
+    border: 3px solid #ff6f00;
+    color: #ff6f00;
+    font-weight: 900;
+    font-size: 1.3rem;
+    padding: 14px 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    user-select: none;
+    box-shadow:
+      0 0 5px #ff6f00,
+      0 0 15px #ffb347,
+      0 0 30px #ff6f00,
+      0 0 60px #ffb347;
+    margin: 12px 0;
+    display: inline-block;
+    text-decoration: none;
+  }
+  button:hover, .link-button:hover {
+    color: #ffb347;
+    border-color: #ffb347;
+    box-shadow:
+      0 0 10px #ffb347,
+      0 0 20px #ffb347,
+      0 0 40px #ffb347,
+      0 0 80px #ffb347;
+  }
+  button::before, .link-button::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 111, 0, 0.6) 50%,
+      transparent 100%
+    );
+    transform: rotate(45deg);
+    animation: shine 2.5s linear infinite;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  @keyframes shine {
+    0% {
+      transform: translateX(-100%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(100%) rotate(45deg);
+    }
+  }
+
+  /* Video style with neon scan effect */
+  video {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 15px;
+    box-shadow:
+      0 0 20px #ff6f00,
+      0 0 40px #ffb347,
+      inset 0 0 20px #ff6f00;
+    position: relative;
+    display: none;
+    background: #121212;
+  }
+  video::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #ff6f00,
+      #ffb347,
+      #ff6f00,
+      transparent
+    );
+    animation: scanline 3s linear infinite;
+    pointer-events: none;
+    border-radius: 2px;
+    mix-blend-mode: screen;
+  }
+  @keyframes scanline {
+    0% {
+      transform: translateY(-4px);
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100%);
+      opacity: 0.5;
+    }
+  }
+
+  #result {
+    margin-top: 40px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    color: #ff6f00;
+    text-shadow:
+      0 0 5px #ff6f00,
+      0 0 15px #ffb347,
+      0 0 25px #ff6f00,
+      0 0 40px #ffb347;
+    user-select: text;
+  }
+  #result a {
+    color: #ffb347;
+    text-decoration: none;
+    font-weight: 900;
+    word-break: break-word;
+    transition: text-shadow 0.3s ease;
+  }
+  #result a:hover {
+    text-shadow:
+      0 0 10px #ffb347,
+      0 0 20px #ffb347,
+      0 0 40px #ffb347,
+      0 0 80px #ffb347;
+  }
+
+  /* Overlay for heures d'ouverture */
+  #hoursOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(18, 18, 18, 0.95);
+    color: #ff6f00;
+    font-family: 'Orbitron', sans-serif;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 30px;
+    text-align: center;
+    z-index: 9999;
+    user-select: text;
+    text-shadow:
+      0 0 10px #ff6f00,
+      0 0 20px #ffb347,
+      0 0 40px #ff6f00;
+    font-size: 1.8rem;
+    line-height: 1.5;
+    border: 4px solid #ff6f00;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: 80px auto;
+  }
+  #hoursOverlay button {
+    margin-top: 30px;
+    font-size: 1.3rem;
+    padding: 10px 30px;
+  }
+</style>
+</head>
+<body>
+  <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
+  <main>
+    <button id="hoursBtn">HEURES D'OUVERTURE</button>
+    <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDE EN LIGNE</a>
+    <button id="startBtn">SCANNER QR CODE</button>
+    <video id="video" playsinline></video>
+    <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
+    <div id="result"></div>
+  </main>
+
+  <div id="hoursOverlay">
+    <div>A partir du 04/08/25<br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div>
+    <button id="closeHoursBtn">FERMER</button>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+  const hoursBtn = document.getElementById('hoursBtn');
+  const orderBtn = document.getElementById('orderBtn');
+  const startBtn = document.getElementById('startBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const video = document.getElementById('video');
+  const resultDiv = document.getElementById('result');
+  const hoursOverlay = document.getElementById('hoursOverlay');
+  const closeHoursBtn = document.getElementById('closeHoursBtn');
+
+  let stream, scanning = false;
+
+  hoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'flex';
+    startBtn.style.display = 'none';
+    orderBtn.style.display = 'none';
+    hoursBtn.style.display = 'none';
+    video.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    resultDiv.style.display = 'none';
+  });
+
+  closeHoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'none';
+    startBtn.style.display = 'inline-block';
+    orderBtn.style.display = 'inline-block';
+    hoursBtn.style.display = 'inline-block';
+  });
+
+  startBtn.addEventListener('click', startCamera);
+  cancelBtn.addEventListener('click', () => {
+    scanning = false;
+    stopCamera();
+    cancelBtn.style.display = 'none';
+    video.style.display = 'none';
+    startBtn.style.display = 'inline-block';
+    orderBtn.style.display = 'inline-block';
+    hoursBtn.style.display = 'inline-block';
+    resultDiv.style.display = 'none';
+  });
+
+  async function startCamera() {
+    startBtn.style.display = 'none';
+    orderBtn.style.display = 'none';
+    hoursBtn.style.display = 'none';
+    resultDiv.style.display = 'none';
+    video.style.display = 'block';
+    cancelBtn.style.display = 'inline-block';
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    } catch (err) {
+      console.error('Erreur accès caméra:', err);
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      } catch (err2) {
+        console.error('Erreur fallback caméra:', err2);
+        alert('Impossible d\'accéder à la caméra. Veuillez vérifier les permissions.');
+        startBtn.style.display = 'inline-block';
+        orderBtn.style.display = 'inline-block';
+        hoursBtn.style.display = 'inline-block';
+        video.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        return;
+      }
+    }
+    video.srcObject = stream;
+    video.play();
+    video.onloadedmetadata = () => {
+      scanning = true;
+      scanLoop();
+    };
+  }
+
+  function scanLoop() {
+    if (!scanning) return;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    if (canvas.width === 0 || canvas.height === 0) {
+      requestAnimationFrame(scanLoop);
+      return;
+    }
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+    if (code) {
+      scanning = false;
+      stopCamera();
+      showResult(code.data);
+    } else {
+      requestAnimationFrame(scanLoop);
+    }
+  }
+
+  function stopCamera() {
+    if (stream) {
+      stream.getTracks().forEach(t => t.stop());
+      stream = null;
+    }
+  }
+
+  function showResult(data) {
+    video.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    resultDiv.style.display = 'flex';
+    if (isURL(data)) {
+      resultDiv.innerHTML = `
+        <a href="${data}" target="_blank" rel="noopener noreferrer">${data}</a>
+        <button onclick="window.open('${data}', '_blank')">SUIVRE LE LIEN</button>
+        <button onclick="resetScan()">RECOMMENCER</button>
+      `;
+    } else {
+      resultDiv.innerHTML = `
+        <div>${data}</div>
+        <button onclick="resetScan()">RECOMMENCER</button>
+      `;
+    }
+  }
+
+  function resetScan() {
+    resultDiv.style.display = 'none';
+    startBtn.style.display = 'inline-block';
+    orderBtn.style.display = 'inline-block';
+    hoursBtn.style.display = 'inline-block';
+  }
+
+  function isURL(str) {
+    try { new URL(str); return true; }
+    catch { return false; }
+  }
+</script>
+</body>
+</html>S
