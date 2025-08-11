@@ -135,38 +135,6 @@
   }
   #result a { color: #ffb347; text-decoration: none; font-weight: 900; word-break: break-word; transition: text-shadow 0.3s ease; }
   #result a:hover { text-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347; }
-
-  /* Boutons dans la page résultat du lien */
-  #linkPage {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-top: 40px;
-    max-width: 90vw;
-  }
-  #linkPage button {
-    width: 80%;
-    max-width: 300px;
-    padding: 14px;
-    font-size: 1.3rem;
-    font-weight: 900;
-    border-radius: 10px;
-    border: 3px solid #ff6f00;
-    background: transparent;
-    color: #ff6f00;
-    box-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347, 0 0 30px #ff6f00, 0 0 60px #ffb347;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-  #linkPage button:hover {
-    color: #ffb347;
-    border-color: #ffb347;
-    box-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347;
-  }
-
   #hoursOverlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(18, 18, 18, 0.95); color: #ff6f00; font-family: 'Orbitron', sans-serif;
@@ -193,133 +161,165 @@
     <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDE EN LIGNE</a>
     <button id="mailBtn">COMMANDE PAR MAIL</button>
     <button id="startBtn">SCANNER QR CODE</button>
-
     <video id="video" playsinline autoplay muted></video>
     <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
-
     <div id="result"></div>
-
-    <!-- Page dédiée au lien scanné -->
-    <div id="linkPage">
-      <div id="linkURL" style="color:#ffb347; font-weight:700; word-break: break-word;"></div>
-      <button id="followLinkBtn">SUIVRE LE LIEN</button>
-      <button id="cancelLinkBtn">ANNULER</button>
-    </div>
   </main>
 
   <div id="hoursOverlay">
-    <div>
-      <h2>Heures d'ouverture</h2>
-      <p>  
-        Lundi - Vendredi : 10h - 18h<br>
-        Samedi : 10h - 17h<br>
-        Dimanche : Fermé
-      </p>
-      <button id="closeHoursBtn">Fermer</button>
-    </div>
+    <div>A partir du 04/08/25<br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div>
+    <button id="closeHoursBtn">FERMER</button>
   </div>
 
-<script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+  <!-- Overlay mail -->
+  <div id="mailOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(18,18,18,0.95); color:#ff6f00; font-family:'Orbitron',sans-serif; display:none; flex-direction:column; justify-content:center; align-items:center; padding:40px 30px; text-align:center; z-index:9999; user-select:text; text-shadow:0 0 10px #ff6f00,0 0 20px #ffb347,0 0 40px #ff6f00; font-size:1.8rem; line-height:1.5; border:4px solid #ff6f00; border-radius:15px; max-width:600px; margin:80px auto;">
+    <div class="mail-address">FACOPYBXL@PROXIMUS.BE</div>
+    <br>
+    <button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button>
+    <button id="closeMailBtn" style="margin-top:30px; font-size:1.3rem; padding:10px 30px;">FERMER</button>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
-  const video = document.getElementById('video');
-  const startBtn = document.getElementById('startBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
   const mailBtn = document.getElementById('mailBtn');
-  const orderBtn = document.getElementById('orderBtn');
-  const resultDiv = document.getElementById('result');
-  const linkPage = document.getElementById('linkPage');
-  const linkURLDiv = document.getElementById('linkURL');
-  const followLinkBtn = document.getElementById('followLinkBtn');
-  const cancelLinkBtn = document.getElementById('cancelLinkBtn');
+  const mailOverlay = document.getElementById('mailOverlay');
+  const closeMailBtn = document.getElementById('closeMailBtn');
+
+  mailBtn.addEventListener('click', () => { mailOverlay.style.display = 'flex'; });
+  closeMailBtn.addEventListener('click', () => { mailOverlay.style.display = 'none'; });
 
   const hoursBtn = document.getElementById('hoursBtn');
+  const orderBtn = document.getElementById('orderBtn');
+  const startBtn = document.getElementById('startBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const video = document.getElementById('video');
+  const resultDiv = document.getElementById('result');
   const hoursOverlay = document.getElementById('hoursOverlay');
   const closeHoursBtn = document.getElementById('closeHoursBtn');
+  let stream, scanning = false;
 
-  let scanning = false;
-  let stream = null;
-
-  function stopStream() {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      stream = null;
-    }
-    video.style.display = 'none';
-    scanning = false;
-    cancelBtn.style.display = 'none';
-    mailBtn.style.display = 'inline-block'; // remonter bouton mail après scan
-  }
-
-  startBtn.addEventListener('click', async () => {
-    try {
-      // Démarrer la caméra
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      video.srcObject = stream;
-      video.style.display = 'block';
-      scanning = true;
-      mailBtn.style.display = 'none'; // cacher bouton mail pendant scan
-      resultDiv.style.display = 'none';
-      linkPage.style.display = 'none';
-      cancelBtn.style.display = 'inline-block';
-      startBtn.style.display = 'none'; // cacher bouton scan pour éviter double clic
-
-      scanQRCode();
-    } catch (e) {
-      alert('Erreur accès caméra : ' + e.message);
-    }
-  });
-
-  cancelBtn.addEventListener('click', () => {
-    stopStream();
-    startBtn.style.display = 'inline-block';
-    resultDiv.style.display = 'none';
-  });
-
-  // Fonction de scan QR code
-  async function scanQRCode() {
-    if (!scanning) return;
-    if (video.readyState !== video.HAVE_ENOUGH_DATA) {
-      requestAnimationFrame(scanQRCode);
-      return;
-    }
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const code = jsQR(imageData.data, canvas.width, canvas.height);
-    if (code) {
-      stopStream();
-
-      // Afficher la page du lien scanné
-      linkURLDiv.textContent = code.data;
-      linkPage.style.display = 'flex';
-
-      // Réinitialiser bouton scan
-      startBtn.style.display = 'inline-block';
-    } else {
-      requestAnimationFrame(scanQRCode);
-    }
-  }
-
-  // Boutons dans page lien
-  followLinkBtn.addEventListener('click', () => {
-    const url = linkURLDiv.textContent;
-    if (url) window.open(url, '_blank', 'noopener');
-  });
-  cancelLinkBtn.addEventListener('click', () => {
-    linkPage.style.display = 'none';
-    resultDiv.style.display = 'none';
-  });
-
-  // Heures d'ouverture
   hoursBtn.addEventListener('click', () => {
     hoursOverlay.style.display = 'flex';
+    startBtn.style.display = 'none';
+    orderBtn.style.display = 'none';
+    hoursBtn.style.display = 'none';
+    video.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    resultDiv.style.display = 'none';
   });
+
   closeHoursBtn.addEventListener('click', () => {
     hoursOverlay.style.display = 'none';
+    startBtn.style.display = 'inline-block';
+    orderBtn.style.display = 'inline-block';
+    hoursBtn.style.display = 'inline-block';
   });
+
+  startBtn.addEventListener('click', startCamera);
+  cancelBtn.addEventListener('click', () => {
+    scanning = false;
+    stopCamera();
+    resetScan();
+  });
+
+  async function startCamera() {
+    startBtn.style.display = 'none';
+    orderBtn.style.display = 'none';
+    hoursBtn.style.display = 'none';
+    resultDiv.style.display = 'none';
+    video.style.display = 'block';
+    cancelBtn.style.display = 'inline-block';
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { exact: "environment" } },
+        audio: false
+      });
+    } catch (err) {
+      console.warn('Erreur accès caméra, tentative fallback:', err);
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false
+        });
+      } catch (err2) {
+        console.error('Impossible d’accéder à la caméra:', err2);
+        alert('Vérifiez que vous avez autorisé l’accès à la caméra dans votre navigateur.');
+        resetScan();
+        return;
+      }
+    }
+
+    video.srcObject = stream;
+    try { await video.play(); } catch (err) { console.error("Erreur lecture vidéo:", err); }
+
+    scanning = true;
+    scanLoop();
+  }
+
+  function scanLoop() {
+    if (!scanning) return;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    if (canvas.width === 0 || canvas.height === 0) {
+      requestAnimationFrame(scanLoop);
+      return;
+    }
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+    if (code) {
+      scanning = false;
+      stopCamera();
+      showResult(code.data);
+    } else {
+      requestAnimationFrame(scanLoop);
+    }
+  }
+
+  function stopCamera() {
+    if (stream) {
+      stream.getTracks().forEach(t => t.stop());
+      stream = null;
+    }
+  }
+
+  function showResult(data) {
+    video.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    resultDiv.style.display = 'flex';
+    if (isURL(data)) {
+      resultDiv.innerHTML = `
+        <a href="${data}" target="_blank" rel="noopener noreferrer">${data}</a>
+        <button onclick="window.open('${data}', '_blank')">SUIVRE LE LIEN</button>
+        <button onclick="resetScan()">RECOMMENCER</button>
+      `;
+    } else {
+      resultDiv.innerHTML = `
+        <div>${data}</div>
+        <button onclick="resetScan()">RECOMMENCER</button>
+      `;
+    }
+  }
+
+  function resetScan() {
+    resultDiv.style.display = 'none';
+    startBtn.style.display = 'inline-block';
+    orderBtn.style.display = 'inline-block';
+    hoursBtn.style.display = 'inline-block';
+    cancelBtn.style.display = 'none';
+    video.style.display = 'none';
+  }
+
+  function isURL(str) {
+    try { new URL(str); return true; }
+    catch { return false; }
+  }
 </script>
 </body>
 </html>
