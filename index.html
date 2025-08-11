@@ -48,7 +48,6 @@
   @keyframes flicker {
     0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
       opacity: 1;
-      /* text-shadow a été déplacé sur les boutons uniquement */
     }
     20%, 22%, 24%, 55% { opacity: 0.6; }
   }
@@ -88,6 +87,7 @@
     margin: 12px 0;
     display: inline-block;
     text-decoration: none;
+    width: 100%; 
   }
   button:hover, .link-button:hover {
     color: #ffb347; border-color: #ffb347;
@@ -118,11 +118,9 @@
     flex-direction: column; align-items: center; gap: 20px;
     color: #ff6f00;
     user-select: text;
-    /* MODIFICATION : text-shadow supprimé */
   }
   #result a { color: #ffb347; text-decoration: none; font-weight: 900; word-break: break-word; transition: text-shadow 0.3s ease; }
   #result a:hover { 
-    /* MODIFICATION : text-shadow supprimé */
     color: #ff6f00;
    }
   
@@ -130,24 +128,54 @@
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(18, 18, 18, 0.95); color: #ff6f00;
     display: none; flex-direction: column; justify-content: center; align-items: center;
-    padding: 40px 30px; text-align: center; z-index: 9999; user-select: text;
+    padding: 20px; text-align: center; z-index: 9999; user-select: text;
     font-size: 1.8rem; line-height: 1.5;
     border: 4px solid #ff6f00; border-radius: 15px; max-width: 600px; margin: 80px auto;
-    /* MODIFICATION : text-shadow supprimé */
   }
   .overlay button {
      margin-top: 20px;
      margin-bottom: 10px;
   }
+
+  .contact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 10px;
+    border-bottom: 1px solid #ff6f00;
+  }
+  .contact-row:last-of-type {
+    border-bottom: none;
+  }
+  .contact-info {
+    text-align: left;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    word-break: break-all;
+  }
+  .contact-info span {
+    font-size: 0.9rem;
+    color: #ffb347;
+  }
+  .contact-action button {
+    margin: 0;
+    padding: 10px 15px;
+    font-size: 1rem;
+    /* MODIFICATION : Largeur des boutons réduite de 250px à 225px */
+    width: 225px; 
+  }
+
 </style>
 </head>
 <body>
   <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
   <main>
     <button id="hoursBtn">HEURES D'OUVERTURE</button>
+    <button id="startBtn">IMPRIMER SUR PLACE</button> 
     <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDER EN LIGNE</a>
     <button id="mailBtn">COMMANDER PAR MAIL</button>
-    <button id="startBtn">IMPRIMER SUR PLACE</button> 
+    <button id="contactsBtn">CONTACTS</button>
     
     <video id="video" playsinline autoplay muted></video>
     
@@ -160,7 +188,7 @@
   </main>
 
   <div id="hoursOverlay" class="overlay">
-    <div>A partir du 04/08/25<br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div>
+    <div>À PARTIR DU 04/08/25<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div>
     <button id="closeHoursBtn">FERMER</button>
   </div>
   
@@ -189,6 +217,28 @@
     <button id="sendFilesBtn">ENVOYER MES FICHIERS</button>
     <button id="cancelMailProcessBtn">ANNULER</button>
   </div>
+  
+  <div id="contactsOverlay" class="overlay">
+      <div class="contact-row">
+          <div class="contact-info">
+              <span>Par téléphone :</span><br>
+              02 461 30 05
+          </div>
+          <div class="contact-action">
+              <button id="callBtn">APPELER</button>
+          </div>
+      </div>
+      <div class="contact-row">
+          <div class="contact-info">
+                <span>Par e-mail :</span><br>
+                FACOPYBXL@PROXIMUS.BE
+          </div>
+          <div class="contact-action">
+              <button id="askQuestionBtn">POSER UNE QUESTION</button>
+          </div>
+      </div>
+      <button id="closeContactsBtn">FERMER</button>
+  </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
@@ -213,6 +263,12 @@
   const selfServiceMailOverlay = document.getElementById('selfServiceMailOverlay');
   const sendFilesBtn = document.getElementById('sendFilesBtn');
   const cancelMailProcessBtn = document.getElementById('cancelMailProcessBtn');
+  const contactsBtn = document.getElementById('contactsBtn'); 
+  const contactsOverlay = document.getElementById('contactsOverlay');
+  const callBtn = document.getElementById('callBtn');
+  const askQuestionBtn = document.getElementById('askQuestionBtn');
+  const closeContactsBtn = document.getElementById('closeContactsBtn');
+
 
   let stream, scanning = false;
 
@@ -222,6 +278,7 @@
     orderBtn.style.display = 'none';
     hoursBtn.style.display = 'none';
     mailBtn.style.display = 'none';
+    contactsBtn.style.display = 'none'; 
   }
 
   function showAllMenus() {
@@ -229,9 +286,10 @@
     orderBtn.style.display = 'inline-block';
     hoursBtn.style.display = 'inline-block';
     mailBtn.style.display = 'inline-block';
+    contactsBtn.style.display = 'inline-block';
   }
 
-  // --- GESTION DES MENUS PRINCIPAUX ---
+  // --- GESTION DES MENUS ---
   mailBtn.addEventListener('click', () => { 
     mailOverlay.style.display = 'flex'; 
     hideAllMenus();
@@ -258,19 +316,33 @@
     printOverlay.style.display = 'none';
     showAllMenus();
   });
+  
+  contactsBtn.addEventListener('click', () => {
+    contactsOverlay.style.display = 'flex';
+    hideAllMenus();
+  });
+  callBtn.addEventListener('click', () => {
+    window.location.href = 'tel:+3224613005';
+  });
+  askQuestionBtn.addEventListener('click', () => {
+    window.location.href = 'mailto:FACOPYBXL@PROXIMUS.BE';
+  });
+  closeContactsBtn.addEventListener('click', () => {
+    contactsOverlay.style.display = 'none';
+    showAllMenus();
+  });
+
 
   // --- GESTION DE L'ENVOI DE MAIL SELF-SERVICE ---
   startMailProcessBtn.addEventListener('click', () => {
       printOverlay.style.display = 'none';
       selfServiceMailOverlay.style.display = 'flex';
   });
-
   sendFilesBtn.addEventListener('click', () => {
       window.location.href = 'mailto:UNIFCOPY@OUTLOOK.COM';
       selfServiceMailOverlay.style.display = 'none';
       showAllMenus();
   });
-  
   cancelMailProcessBtn.addEventListener('click', () => {
       selfServiceMailOverlay.style.display = 'none';
       showAllMenus();
