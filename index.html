@@ -135,6 +135,23 @@
   }
   #result a { color: #ffb347; text-decoration: none; font-weight: 900; word-break: break-word; transition: text-shadow 0.3s ease; }
   #result a:hover { text-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347; }
+
+  /* Conteneur pour empiler les boutons verticalement */
+  #qrModalButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  #qrModalButtons button {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 1.3rem;
+    border-radius: 10px;
+  }
+
   #hoursOverlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(18, 18, 18, 0.95); color: #ff6f00; font-family: 'Orbitron', sans-serif;
@@ -152,196 +169,139 @@
     text-align: center;
     max-width: 100%;
   }
-  /* MODAL QR RESULT */
-  #qrModal {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(18, 18, 18, 0.97);
-    color: #ff6f00;
-    font-family: 'Orbitron', sans-serif;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 30px 25px;
-    text-align: center;
-    z-index: 10000;
-    border: 4px solid #ff6f00;
-    border-radius: 15px;
-    max-width: 600px;
-    margin: 80px auto;
-  }
-  #qrModal .url-text {
-    font-size: 1.6rem;
-    word-break: break-word;
-    margin-bottom: 30px;
-    user-select: text;
-    text-shadow: 0 0 10px #ff6f00, 0 0 20px #ffb347, 0 0 40px #ff6f00;
-  }
-  #qrModalButtons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-  }
-  #qrModalButtons button {
-    width: 100%;
-    max-width: 320px;
-    padding: 14px 0;
-    font-size: 1.3rem;
-    border-radius: 10px;
-  }
 </style>
 </head>
 <body>
   <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
   <main>
-    <button id="startBtn">Scanner un QR code</button>
-    <button id="orderBtn">Commande par mail</button>
-    <button id="hoursBtn">Horaires</button>
-    <button id="mailBtn">Contact mail</button>
-    <video id="video" playsinline></video>
-    <button id="cancelBtn" style="display:none;">Annuler le scan</button>
+    <button id="hoursBtn">HEURES D'OUVERTURE</button>
+    <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDE EN LIGNE</a>
+    <button id="mailBtn">COMMANDE PAR MAIL</button>
+    <button id="startBtn">SCANNER QR CODE</button>
+    <video id="video" playsinline autoplay muted></video>
+    <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
     <div id="result"></div>
   </main>
 
-  <!-- MODAL pour afficher URL scannée -->
-  <div id="qrModal">
-    <div class="url-text" id="scannedUrl"></div>
-    <div id="qrModalButtons">
-      <button id="followLinkBtn">Suivre le lien</button>
-      <button id="cancelLinkBtn">Annuler</button>
-    </div>
+  <div id="hoursOverlay">
+    <div>A partir du 04/08/25<br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div>
+    <button id="closeHoursBtn">FERMER</button>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <!-- Overlay mail -->
+  <div id="mailOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(18,18,18,0.95); color:#ff6f00; font-family:'Orbitron',sans-serif; display:none; flex-direction:column; justify-content:center; align-items:center; padding:40px 30px; text-align:center; z-index:9999; user-select:text; text-shadow:0 0 10px #ff6f00,0 0 20px #ffb347,0 0 40px #ff6f00; font-size:1.8rem; line-height:1.5; border:4px solid #ff6f00; border-radius:15px; max-width:600px; margin:80px auto;">
+    <div class="mail-address">FACOPYBXL@PROXIMUS.BE</div>
+    <br>
+    <button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button>
+    <button id="closeMailBtn" style="margin-top:30px; font-size:1.3rem; padding:10px 30px;">FERMER</button>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
-  const startBtn = document.getElementById('startBtn');
-  const orderBtn = document.getElementById('orderBtn');
-  const hoursBtn = document.getElementById('hoursBtn');
   const mailBtn = document.getElementById('mailBtn');
-  const video = document.getElementById('video');
+  const mailOverlay = document.getElementById('mailOverlay');
+  const closeMailBtn = document.getElementById('closeMailBtn');
+
+  mailBtn.addEventListener('click', () => { mailOverlay.style.display = 'flex'; });
+  closeMailBtn.addEventListener('click', () => { mailOverlay.style.display = 'none'; });
+
+  const hoursBtn = document.getElementById('hoursBtn');
+  const orderBtn = document.getElementById('orderBtn');
+  const startBtn = document.getElementById('startBtn');
   const cancelBtn = document.getElementById('cancelBtn');
+  const video = document.getElementById('video');
   const resultDiv = document.getElementById('result');
-  const qrModal = document.getElementById('qrModal');
-  const scannedUrlElem = document.getElementById('scannedUrl');
-  const followLinkBtn = document.getElementById('followLinkBtn');
-  const cancelLinkBtn = document.getElementById('cancelLinkBtn');
+  const hoursOverlay = document.getElementById('hoursOverlay');
+  const closeHoursBtn = document.getElementById('closeHoursBtn');
+  let stream, scanning = false;
 
-  let scanning = false;
-  let videoStream = null;
-  let scannedUrl = '';
-
-  startBtn.addEventListener('click', () => { startCamera(); });
-  cancelBtn.addEventListener('click', () => { resetScan(); });
-
-  followLinkBtn.addEventListener('click', () => {
-    if(scannedUrl) {
-      window.open(scannedUrl, '_blank', 'noopener');
-      closeQrModal();
-      resetScan();
-    }
+  hoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'flex';
+  });
+  closeHoursBtn.addEventListener('click', () => {
+    hoursOverlay.style.display = 'none';
   });
 
-  cancelLinkBtn.addEventListener('click', () => {
-    closeQrModal();
-    resetScan();
-  });
-
-  function startCamera() {
-    startBtn.style.display = 'none';
-    orderBtn.style.display = 'none';
-    hoursBtn.style.display = 'none';
-    mailBtn.style.display = 'none';
+  startBtn.addEventListener('click', async () => {
     resultDiv.style.display = 'none';
-    video.style.display = 'block';
-    cancelBtn.style.display = 'inline-block';
-
+    resultDiv.innerHTML = '';
     try {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        .then(stream => {
-          videoStream = stream;
-          video.srcObject = stream;
-          scanning = true;
-          scanLoop();
-        })
-        .catch(err => {
-          alert('Erreur lors de l\'accès à la caméra: ' + err);
-          resetScan();
-        });
-    } catch (err) {
-      alert('Erreur lors de l\'accès à la caméra: ' + err);
-      resetScan();
-    }
-  }
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = stream;
+      video.style.display = 'block';
+      scanning = true;
 
-  function resetScan() {
-    scanning = false;
-    if (videoStream) {
-      videoStream.getTracks().forEach(track => track.stop());
-      videoStream = null;
+      // Cacher le bouton "COMMANDE PAR MAIL" quand on scanne
+      mailBtn.style.display = 'none';
+
+      scanQRCode();
+    } catch (e) {
+      alert('Erreur accès caméra : ' + e.message);
     }
-    video.srcObject = null;
-    video.style.display = 'none';
-    cancelBtn.style.display = 'none';
-    startBtn.style.display = 'inline-block';
-    orderBtn.style.display = 'inline-block';
-    hoursBtn.style.display = 'inline-block';
-    mailBtn.style.display = 'inline-block';
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    stopScan();
     resultDiv.style.display = 'none';
-  }
+    mailBtn.style.display = 'inline-block'; // Réafficher le bouton mail
+  });
 
-  function scanLoop() {
-    if (!scanning) return;
-
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      const code = jsQR(imageData.data, canvas.width, canvas.height, {
-        inversionAttempts: "dontInvert",
-      });
-
-      if (code) {
-        scanning = false;
-        scannedUrl = code.data;
-        showQrModal(scannedUrl);
-        if (videoStream) {
-          videoStream.getTracks().forEach(track => track.stop());
-          videoStream = null;
-        }
-        video.srcObject = null;
-        video.style.display = 'none';
-        cancelBtn.style.display = 'none';
-        return;
-      }
+  function stopScan() {
+    scanning = false;
+    cancelBtn.style.display = 'none';
+    video.style.display = 'none';
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
     }
-    requestAnimationFrame(scanLoop);
-  }
-
-  function showQrModal(url) {
-    scannedUrlElem.textContent = url;
-    qrModal.style.display = 'flex';
-    // Cacher les boutons principaux pendant la modale
-    startBtn.style.display = 'none';
-    orderBtn.style.display = 'none';
-    hoursBtn.style.display = 'none';
-    mailBtn.style.display = 'none';
-  }
-
-  function closeQrModal() {
-    qrModal.style.display = 'none';
-    // Remonter les boutons principaux
-    startBtn.style.display = 'inline-block';
-    orderBtn.style.display = 'inline-block';
-    hoursBtn.style.display = 'inline-block';
     mailBtn.style.display = 'inline-block';
+  }
+
+  function scanQRCode() {
+    cancelBtn.style.display = 'inline-block';
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    const scan = () => {
+      if (!scanning) return;
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, canvas.width, canvas.height, { inversionAttempts: 'dontInvert' });
+        if (code) {
+          scanning = false;
+          stopScan();
+          showLinkModal(code.data);
+          return;
+        }
+      }
+      requestAnimationFrame(scan);
+    };
+    scan();
+  }
+
+  function showLinkModal(url) {
+    resultDiv.style.display = 'flex';
+    resultDiv.innerHTML = `
+      <div style="font-size:1.6rem; font-weight: 900; margin-bottom: 18px; color:#ffb347;">Lien détecté :</div>
+      <div style="word-break: break-word; color:#ff6f00; font-weight:900; font-size:1.3rem;">${url}</div>
+      <div id="qrModalButtons">
+        <button id="followBtn">SUIVRE LE LIEN</button>
+        <button id="cancelModalBtn">ANNULER</button>
+      </div>
+    `;
+
+    document.getElementById('followBtn').addEventListener('click', () => {
+      window.open(url, '_blank', 'noopener,noreferrer');
+      resultDiv.style.display = 'none';
+      mailBtn.style.display = 'inline-block';
+    });
+    document.getElementById('cancelModalBtn').addEventListener('click', () => {
+      resultDiv.style.display = 'none';
+      mailBtn.style.display = 'inline-block';
+    });
   }
 </script>
 </body>
