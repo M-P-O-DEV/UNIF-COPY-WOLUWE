@@ -152,6 +152,40 @@
     text-align: center;
     max-width: 100%;
   }
+  /* MODAL QR RESULT */
+  #qrModal {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(18, 18, 18, 0.97);
+    color: #ff6f00;
+    font-family: 'Orbitron', sans-serif;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 25px;
+    text-align: center;
+    z-index: 10000;
+    border: 4px solid #ff6f00;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: 80px auto;
+  }
+  #qrModal .url-text {
+    font-size: 1.6rem;
+    word-break: break-word;
+    margin-bottom: 30px;
+    user-select: text;
+    text-shadow: 0 0 10px #ff6f00, 0 0 20px #ffb347, 0 0 40px #ff6f00;
+  }
+  #qrModal button {
+    width: 160px;
+    margin: 10px 20px;
+  }
+  #qrModalButtons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
 </style>
 </head>
 <body>
@@ -171,12 +205,20 @@
     <button id="closeHoursBtn">FERMER</button>
   </div>
 
-  <!-- Overlay mail -->
   <div id="mailOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(18,18,18,0.95); color:#ff6f00; font-family:'Orbitron',sans-serif; display:none; flex-direction:column; justify-content:center; align-items:center; padding:40px 30px; text-align:center; z-index:9999; user-select:text; text-shadow:0 0 10px #ff6f00,0 0 20px #ffb347,0 0 40px #ff6f00; font-size:1.8rem; line-height:1.5; border:4px solid #ff6f00; border-radius:15px; max-width:600px; margin:80px auto;">
     <div class="mail-address">FACOPYBXL@PROXIMUS.BE</div>
     <br>
     <button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button>
     <button id="closeMailBtn" style="margin-top:30px; font-size:1.3rem; padding:10px 30px;">FERMER</button>
+  </div>
+
+  <!-- MODAL POUR RESULTAT QR -->
+  <div id="qrModal">
+    <div class="url-text" id="scannedUrl"></div>
+    <div id="qrModalButtons">
+      <button id="followLinkBtn">SUIVRE LE LIEN</button>
+      <button id="cancelLinkBtn">ANNULER</button>
+    </div>
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
@@ -197,29 +239,56 @@
   const hoursOverlay = document.getElementById('hoursOverlay');
   const closeHoursBtn = document.getElementById('closeHoursBtn');
 
+  // Modal QR
+  const qrModal = document.getElementById('qrModal');
+  const scannedUrlElem = document.getElementById('scannedUrl');
+  const followLinkBtn = document.getElementById('followLinkBtn');
+  const cancelLinkBtn = document.getElementById('cancelLinkBtn');
+
   closeHoursBtn.addEventListener('click', () => { hoursOverlay.style.display = 'none'; });
   hoursBtn.addEventListener('click', () => { hoursOverlay.style.display = 'flex'; });
 
   let scanning = false;
   let videoStream = null;
+  let scannedUrl = '';
 
   startBtn.addEventListener('click', () => { startCamera(); });
   cancelBtn.addEventListener('click', () => { resetScan(); });
 
-  async function startCamera() {
+  followLinkBtn.addEventListener('click', () => {
+    if(scannedUrl) {
+      window.open(scannedUrl, '_blank', 'noopener');
+      closeQrModal();
+      resetScan();
+    }
+  });
+
+  cancelLinkBtn.addEventListener('click', () => {
+    closeQrModal();
+    resetScan();
+  });
+
+  function startCamera() {
     startBtn.style.display = 'none';
     orderBtn.style.display = 'none';
     hoursBtn.style.display = 'none';
-    mailBtn.style.display = 'none';  // <-- On cache le bouton mail ici
+    mailBtn.style.display = 'none';
     resultDiv.style.display = 'none';
     video.style.display = 'block';
     cancelBtn.style.display = 'inline-block';
 
     try {
-      videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      video.srcObject = videoStream;
-      scanning = true;
-      scanLoop();
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+          videoStream = stream;
+          video.srcObject = stream;
+          scanning = true;
+          scanLoop();
+        })
+        .catch(err => {
+          alert('Erreur lors de l\'accès à la caméra: ' + err);
+          resetScan();
+        });
     } catch (err) {
       alert('Erreur lors de l\'accès à la caméra: ' + err);
       resetScan();
@@ -238,7 +307,7 @@
     startBtn.style.display = 'inline-block';
     orderBtn.style.display = 'inline-block';
     hoursBtn.style.display = 'inline-block';
-    mailBtn.style.display = 'inline-block';  // <-- On remet le bouton mail visible ici
+    mailBtn.style.display = 'inline-block';
     resultDiv.style.display = 'none';
   }
 
@@ -259,24 +328,38 @@
 
       if (code) {
         scanning = false;
-        resultDiv.innerHTML = `<div>QR Code détecté:</div><a href="${code.data}" target="_blank" rel="noopener noreferrer">${code.data}</a>`;
-        resultDiv.style.display = 'flex';
-        cancelBtn.style.display = 'none';
-
+        scannedUrl = code.data;
+        showQrModal(scannedUrl);
         if (videoStream) {
           videoStream.getTracks().forEach(track => track.stop());
           videoStream = null;
         }
         video.srcObject = null;
         video.style.display = 'none';
-        mailBtn.style.display = 'inline-block';  // Remet le bouton mail visible quand le scan est fini
-        startBtn.style.display = 'inline-block';
-        orderBtn.style.display = 'inline-block';
-        hoursBtn.style.display = 'inline-block';
+        cancelBtn.style.display = 'none';
         return;
       }
     }
     requestAnimationFrame(scanLoop);
+  }
+
+  function showQrModal(url) {
+    scannedUrlElem.textContent = url;
+    qrModal.style.display = 'flex';
+    // Cacher les boutons principaux pendant la modale
+    startBtn.style.display = 'none';
+    orderBtn.style.display = 'none';
+    hoursBtn.style.display = 'none';
+    mailBtn.style.display = 'none';
+  }
+
+  function closeQrModal() {
+    qrModal.style.display = 'none';
+    // Remonter les boutons principaux
+    startBtn.style.display = 'inline-block';
+    orderBtn.style.display = 'inline-block';
+    hoursBtn.style.display = 'inline-block';
+    mailBtn.style.display = 'inline-block';
   }
 </script>
 </body>
