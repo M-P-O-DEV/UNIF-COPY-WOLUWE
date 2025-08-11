@@ -242,7 +242,7 @@
               <button id="askQuestionBtn">POSER UNE QUESTION</button>
           </div>
       </div>
-      <button id="closeContactsBtn" style="width: auto; font-size: 1.1rem; padding: 12px 50px;">RETOUR</button>
+      <button id="closeContactsBtn" style="width: auto; font-size: 1.1rem; padding: 10px 40px;">RETOUR</button>
   </div>
 
 
@@ -272,7 +272,6 @@
   const contactsOverlay = document.getElementById('contactsOverlay');
   const callBtn = document.getElementById('callBtn');
   const askQuestionBtn = document.getElementById('askQuestionBtn');
-  // MODIFICATION : Constante pour le bouton retour ajoutée
   const closeContactsBtn = document.getElementById('closeContactsBtn');
 
 
@@ -333,7 +332,6 @@
   askQuestionBtn.addEventListener('click', () => {
     window.location.href = 'mailto:FACOPYBXL@PROXIMUS.BE';
   });
-  // MODIFICATION : Listener pour le bouton retour ajouté
   closeContactsBtn.addEventListener('click', () => {
     contactsOverlay.style.display = 'none';
     showAllMenus();
