@@ -177,76 +177,58 @@
     user-select: text;
     text-shadow: 0 0 10px #ff6f00, 0 0 20px #ffb347, 0 0 40px #ff6f00;
   }
-  #qrModal button {
-    width: 160px;
-    margin: 10px 20px;
-  }
   #qrModalButtons {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    gap: 30px;
+    gap: 20px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  #qrModalButtons button {
+    width: 100%;
+    max-width: 320px;
+    padding: 14px 0;
+    font-size: 1.3rem;
+    border-radius: 10px;
   }
 </style>
 </head>
 <body>
   <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
   <main>
-    <button id="hoursBtn">HEURES D'OUVERTURE</button>
-    <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDE EN LIGNE</a>
-    <button id="mailBtn">COMMANDE PAR MAIL</button>
-    <button id="startBtn">SCANNER QR CODE</button>
-    <video id="video" playsinline autoplay muted></video>
-    <button id="cancelBtn" style="display:none; margin-top: 15px;">ANNULER</button>
+    <button id="startBtn">Scanner un QR code</button>
+    <button id="orderBtn">Commande par mail</button>
+    <button id="hoursBtn">Horaires</button>
+    <button id="mailBtn">Contact mail</button>
+    <video id="video" playsinline></video>
+    <button id="cancelBtn" style="display:none;">Annuler le scan</button>
     <div id="result"></div>
   </main>
 
-  <div id="hoursOverlay">
-    <div>A partir du 04/08/25<br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div>
-    <button id="closeHoursBtn">FERMER</button>
-  </div>
-
-  <div id="mailOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(18,18,18,0.95); color:#ff6f00; font-family:'Orbitron',sans-serif; display:none; flex-direction:column; justify-content:center; align-items:center; padding:40px 30px; text-align:center; z-index:9999; user-select:text; text-shadow:0 0 10px #ff6f00,0 0 20px #ffb347,0 0 40px #ff6f00; font-size:1.8rem; line-height:1.5; border:4px solid #ff6f00; border-radius:15px; max-width:600px; margin:80px auto;">
-    <div class="mail-address">FACOPYBXL@PROXIMUS.BE</div>
-    <br>
-    <button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button>
-    <button id="closeMailBtn" style="margin-top:30px; font-size:1.3rem; padding:10px 30px;">FERMER</button>
-  </div>
-
-  <!-- MODAL POUR RESULTAT QR -->
+  <!-- MODAL pour afficher URL scannée -->
   <div id="qrModal">
     <div class="url-text" id="scannedUrl"></div>
     <div id="qrModalButtons">
-      <button id="followLinkBtn">SUIVRE LE LIEN</button>
-      <button id="cancelLinkBtn">ANNULER</button>
+      <button id="followLinkBtn">Suivre le lien</button>
+      <button id="cancelLinkBtn">Annuler</button>
     </div>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
 <script>
-  const mailBtn = document.getElementById('mailBtn');
-  const mailOverlay = document.getElementById('mailOverlay');
-  const closeMailBtn = document.getElementById('closeMailBtn');
-
-  mailBtn.addEventListener('click', () => { mailOverlay.style.display = 'flex'; });
-  closeMailBtn.addEventListener('click', () => { mailOverlay.style.display = 'none'; });
-
-  const hoursBtn = document.getElementById('hoursBtn');
-  const orderBtn = document.getElementById('orderBtn');
   const startBtn = document.getElementById('startBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
+  const orderBtn = document.getElementById('orderBtn');
+  const hoursBtn = document.getElementById('hoursBtn');
+  const mailBtn = document.getElementById('mailBtn');
   const video = document.getElementById('video');
+  const cancelBtn = document.getElementById('cancelBtn');
   const resultDiv = document.getElementById('result');
-  const hoursOverlay = document.getElementById('hoursOverlay');
-  const closeHoursBtn = document.getElementById('closeHoursBtn');
-
-  // Modal QR
   const qrModal = document.getElementById('qrModal');
   const scannedUrlElem = document.getElementById('scannedUrl');
   const followLinkBtn = document.getElementById('followLinkBtn');
   const cancelLinkBtn = document.getElementById('cancelLinkBtn');
-
-  closeHoursBtn.addEventListener('click', () => { hoursOverlay.style.display = 'none'; });
-  hoursBtn.addEventListener('click', () => { hoursOverlay.style.display = 'flex'; });
 
   let scanning = false;
   let videoStream = null;
