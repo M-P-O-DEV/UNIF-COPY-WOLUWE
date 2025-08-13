@@ -3,205 +3,360 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>UNIF-COPY WOLUWE - Portail de Services</title>
+<title>UNIF-COPY WOLUWE - Impression sur Place</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
   * { box-sizing: border-box; }
-  body { margin: 0; background: linear-gradient(135deg, #1a1a1a, #2f2f2f, #121212); font-family: 'Orbitron', sans-serif; color: #ff6f00; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; user-select: none; }
-  header { width: 100%; padding: 25px 0; background: linear-gradient(90deg, #ff6f00, #ffb347); color: black; font-size: 2.8rem; font-weight: 900; text-align: center; letter-spacing: 2px; border-bottom: 4px solid #ff6f00; }
-  main { width: 100%; max-width: 640px; padding: 20px 25px; text-align: center; }
-  h2 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #ff6f00; padding-bottom: 10px; margin: 30px 0 20px 0; }
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #1a1a1a, #2f2f2f, #121212);
+    font-family: 'Orbitron', sans-serif;
+    color: #ff6f00;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    user-select: none;
+  }
+  header {
+    width: 100%;
+    padding: 25px 0;
+    background: linear-gradient(90deg, #ff6f00, #ffb347);
+    color: black;
+    font-size: 2.8rem;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    animation: flicker 3s infinite alternate;
+    border-bottom: 4px solid #ff6f00;
+  }
+  header::before, header::after {
+    content: attr(data-text);
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    color: #ff6f00; opacity: 0.7;
+    clip-path: polygon(0 2%, 100% 2%, 100% 8%, 0 8%);
+    animation: glitchTop 2s infinite linear alternate-reverse;
+  }
+  header::after {
+    color: #ffb347;
+    clip-path: polygon(0 85%, 100% 85%, 100% 90%, 0 90%);
+    animation: glitchBottom 3s infinite linear alternate;
+  }
+  @keyframes flicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 20%, 22%, 24%, 55% { opacity: 0.6; } }
+  @keyframes glitchTop { 0%,100% { transform: translate(0); opacity: 0.7; } 20% { transform: translate(-2px, -2px); opacity: 0.4; } 40% { transform: translate(2px, 2px); opacity: 0.7; } 60% { transform: translate(-2px, 2px); opacity: 0.4; } 80% { transform: translate(2px, -2px); opacity: 0.7; } }
+  @keyframes glitchBottom { 0%,100% { transform: translate(0); opacity: 0.7; } 20% { transform: translate(2px, 2px); opacity: 0.4; } 40% { transform: translate(-2px, -2px); opacity: 0.7; } 60% { transform: translate(2px, -2px); opacity: 0.4; } 80% { transform: translate(-2px, 2px); opacity: 0.7; } }
   
-  .service-block { border: 2px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 25px; background: rgba(0,0,0,0.2); }
-  .service-block h3 { margin-top: 0; font-size: 1.2rem; color: #ffb347; }
-  .service-block p { font-size: 0.85rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; }
+  main { width: 100%; max-width: 700px; padding: 30px 25px; text-align: center; }
   
-  button, .link-button { background: transparent; border: 3px solid #ff6f00; color: #ff6f00; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.1rem; padding: 12px 25px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1.5px; margin: 8px 0; width: 100%; }
-  button:hover, .link-button:hover { color: #ffb347; border-color: #ffb347; box-shadow: 0 0 15px #ffb347; }
+  button, .link-button {
+    position: relative;
+    background: transparent;
+    border: 3px solid #ff6f00;
+    color: #ff6f00;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 1.2rem;
+    padding: 14px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    user-select: none;
+    box-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347;
+    margin: 10px 0;
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+  }
+  button:hover, .link-button:hover {
+    color: #ffb347; border-color: #ffb347;
+    box-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ff6f00;
+    padding-bottom: 10px;
+    text-align: center;
+  }
+  .bloc {
+    background: rgba(47, 47, 47, 0.3);
+    border: 1px solid #ff6f00;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+  .bloc-description {
+    font-size: 0.9rem;
+    color: #ffb347;
+    margin-bottom: 15px;
+    line-height: 1.4;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+  .button-group button, .button-group .link-button {
+    flex: 1 1 200px; /* Permet aux boutons de s'adapter */
+    min-width: 200px;
+  }
+  
+  video {
+    width: 100%; max-width: 600px; border-radius: 15px;
+    box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00;
+    position: relative; display: none; background: #121212;
+  }
+  
+  .overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(18, 18, 18, 0.95); color: #ff6f00;
+    display: none; flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    text-align: center; z-index: 9999;
+  }
+  .overlay-content { max-width: 500px; }
+  .printer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
 
-  .secondary-actions button, .secondary-actions .link-button { font-size: 1rem; padding: 10px 20px; }
-  .email-options { display: flex; flex-direction: column; gap: 10px; }
-  
-  .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 18, 18, 0.98); color: #ff6f00; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; z-index: 9999; }
-  .overlay-content { font-size: 1.2rem; line-height: 1.6; max-width: 500px; }
-  .overlay button { max-width: 400px; }
-  
-  .pc-selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 400px; margin-bottom: 20px; }
-  .pc-selection-grid button { font-size: 1rem; padding: 15px 5px; }
 </style>
 </head>
 <body>
-
-  <header id="header">UNIF-COPY WOLUWE</header>
+  <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
 
   <main>
-    <h2>IMPRIMER UN FICHIER SUR PLACE</h2>
+    <div id="main-dashboard">
+      <h2 class="section-title">IMPRIMER UN FICHIER SUR PLACE</h2>
 
-    <div class="service-block">
-      <h3 id="bloc1-title">Dépôt Rapide (Recommandé)</h3>
-      <p id="bloc1-desc">Pour tous vos fichiers (PDF, photos...). Idéal pour envoyer plusieurs fichiers à la fois.</p>
-      <button id="depositBtn">Déposer mes fichiers</button>
-    </div>
+      <div class="bloc">
+        <h3 style="margin-top:0;">Dépôt Rapide (Recommandé)</h3>
+        <p class="bloc-description">Pour tous vos fichiers (PDF, photos...). Idéal pour envoyer plusieurs fichiers à la fois.</p>
+        <button id="depositFileBtn">Déposer mes fichiers</button>
+      </div>
 
-    <div class="service-block">
-      <h3 id="bloc2-title">Envoi par E-mail</h3>
-      <p id="bloc2-desc">Choisissez la situation qui vous correspond.</p>
-      <div class="email-options">
-        <button id="emailNewBtn">J'ai un fichier sur mon téléphone</button>
-        <button id="emailForwardBtn">Je veux transférer un e-mail</button>
+      <div class="bloc">
+        <h3>Envoi par E-mail</h3>
+        <p class="bloc-description">Choisissez la situation qui vous correspond.</p>
+        <div class="button-group">
+          <button id="haveFileOnPhoneBtn">J'ai un fichier sur mon téléphone</button>
+          <button id="transferEmailBtn">Je veux transférer un e-mail</button>
+        </div>
+      </div>
+
+      <div class="bloc">
+        <h3>Transfert par QR Code</h3>
+        <p class="bloc-description">Pour une connexion directe et rapide entre votre téléphone et le PC.</p>
+        <button id="scanQRCodeBtn">Scanner le QR Code du PC</button>
+      </div>
+      
+      <h2 class="section-title">COMMANDES</h2>
+      <div class="button-group">
+        <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a>
+        <button id="order-by-mail-btn">Commander par mail</button>
+      </div>
+      
+      <h2 class="section-title">INFORMATIONS</h2>
+      <div class="button-group">
+        <button id="hoursBtn">Heures d'ouverture</button>
+        <button id="contactsBtn">Contacts</button>
       </div>
     </div>
 
-    <div class="service-block">
-      <h3 id="bloc3-title">Transfert par QR Code</h3>
-      <p id="bloc3-desc">Pour une connexion directe et rapide entre votre téléphone et le PC.</p>
-      <button id="scanQRBtn">Scanner le QR Code du PC</button>
-    </div>
-
-    <div class="secondary-actions">
-      <h2>COMMANDES</h2>
-      <a href="#" id="orderOnlineLink" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a>
-      <button id="orderEmailBtn">Commander par mail</button>
-      
-      <h2>INFORMATIONS</h2>
-      <button id="hoursBtn">Heures d'ouverture</button>
-      <button id="contactsBtn">Contacts</button>
+    <div id="scanner-view" style="display:none; width:100%;">
+      <video id="video" playsinline autoplay muted></video>
+      <div id="scanInstruction" style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;">
+          Sur le PC en face de vous, double-cliquez sur l'icône "SCAN QR Code".<br>Un code QR va apparaître sur l'écran du PC.
+      </div>
+      <button id="cancelScanBtn" style="margin-top: 15px;">ANNULER</button>
+      <div id="scanResult" style="margin-top: 20px; font-size: 1.5rem; display:none; color: #ffb347;"></div>
     </div>
   </main>
-
-  <div id="pcSelectionOverlay" class="overlay">
-    <h3 style="margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
-    <div class="pc-selection-grid">
-      <button class="pc-btn" data-pc="pc1">PC 1</button>
-      <button class="pc-btn" data-pc="pc2">PC 2</button>
-      <button class="pc-btn" data-pc="pc3">PC 3</button>
-      <button class="pc-btn" data-pc="pc4">PC 4</button>
-      <button class="pc-btn" data-pc="pc5">PC 5</button>
-      <button class="pc-btn" data-pc="pc6">PC 6</button>
-      <button class="pc-btn" data-pc="pc7">PC 7</button>
-      <button class="pc-btn" data-pc="pc9">PC 9</button>
-      <button class="pc-btn" data-pc="pc10">PC 10</button>
-      <button class="pc-btn" data-pc="pcA">PC A</button>
-      <button class="pc-btn" data-pc="pcB">PC B</button>
-      <button class="pc-btn" data-pc="pcC">PC C</button>
-    </div>
-    <button class="close-overlay-btn" data-overlay="pcSelectionOverlay">RETOUR</button>
-  </div>
   
-  <div id="hoursOverlay" class="overlay">
-      <div id="hoursContent" class="overlay-content"></div>
-      <button class="close-overlay-btn" data-overlay="hoursOverlay">FERMER</button>
-  </div>
-  
+  <div id="hoursOverlay" class="overlay"><div class="overlay-content" id="horaires-contenu"></div><button class="close-overlay-btn">FERMER</button></div>
   <div id="contactsOverlay" class="overlay">
-      <div class="overlay-content" id="contactsContent"></div>
-      <button class="close-overlay-btn" data-overlay="contactsOverlay">FERMER</button>
+      <div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;">
+          <div class="contact-row">
+              <span>TELEPHONE :</span><br> 02 461 30 05
+              <button id="callBtn" style="margin-top:10px;">APPELER</button>
+          </div>
+          <div class="contact-row">
+              <span>MAIL :</span><br> FACOPYBXL@PROXIMUS.BE
+              <button id="askQuestionBtn" style="margin-top:10px;">POSER UNE QUESTION</button>
+          </div>
+      </div>
+      <button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button>
+  </div>
+  <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div>FACOPYBXL@PROXIMUS.BE</div><br><button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'">ENVOYER UN MAIL</button></div><button class="close-overlay-btn">FERMER</button></div>
+  <div id="printerSelectOverlay" class="overlay">
+      <div class="overlay-content">
+          <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
+          <div class="printer-grid">
+              <button class="printer-choice-btn" data-link-id="pc1">PC 1</button>
+              <button class="printer-choice-btn" data-link-id="pc2">PC 2</button>
+              <button class="printer-choice-btn" data-link-id="pc3">PC 3</button>
+              <button class="printer-choice-btn" data-link-id="pc4">PC 4</button>
+              <button class="printer-choice-btn" data-link-id="pc5">PC 5</button>
+              <button class="printer-choice-btn" data-link-id="pc6">PC 6</button>
+              <button class="printer-choice-btn" data-link-id="pc7">PC 7</button>
+              <button class="printer-choice-btn" data-link-id="pc9">PC 9</button>
+              <button class="printer-choice-btn" data-link-id="pc10">PC 10</button>
+              <button class="printer-choice-btn" data-link-id="pcA">PC A</button>
+              <button class="printer-choice-btn" data-link-id="pcB">PC B</button>
+              <button class="printer-choice-btn" data-link-id="pcC">PC C</button>
+          </div>
+          <button class="close-overlay-btn">RETOUR</button>
+      </div>
+  </div>
+  <div id="copyEmailOverlay" class="overlay">
+      <div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px;">
+        <h3 style="font-size: 1.8rem; color: #00ff00;">✅ Adresse Copiée !</h3>
+        <p style="font-size: 1rem; line-height: 1.5;">Maintenant, rendez-vous dans votre application e-mail pour transférer votre message.</p>
+        <button class="close-overlay-btn">J'AI COMPRIS</button>
+      </div>
   </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
-// --- BLOC DE CONFIGURATION ---
-// C'est le SEUL endroit que vous aurez à modifier à l'avenir.
-const config = {
-  // Remplacer les '#' par les vrais liens Dropbox que vous créerez
-  liensDropbox: {
-    pc1: "#LIEN_DROPBOX_PC_1",
-    pc2: "#LIEN_DROPBOX_PC_2",
-    pc3: "#LIEN_DROPBOX_PC_3",
-    pc4: "#LIEN_DROPBOX_PC_4",
-    pc5: "#LIEN_DROPBOX_PC_5",
-    pc6: "#LIEN_DROPBOX_PC_6",
-    pc7: "#LIEN_DROPBOX_PC_7",
-    pc9: "#LIEN_DROPBOX_PC_9",
-    pc10: "#LIEN_DROPBOX_PC_10",
-    pcA: "#LIEN_DROPBOX_PC_A",
-    pcB: "#LIEN_DROPBOX_PC_B",
-    pcC: "#LIEN_DROPBOX_PC_C"
-  },
-  emailImpression: "UNIFCOPY@OUTLOOK.COM",
-  emailCommande: "FACOPYBXL@PROXIMUS.BE",
-  telephone: "02 461 30 05",
-  lienCommandeEnLigne: "https://commande.facopy.be/",
-  heuresOuverture: `À PARTIR DU 13/08/2025<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00`
-};
-// --- FIN DU BLOC DE CONFIGURATION ---
+  // --- BLOC DE CONFIGURATION - MODIFIEZ VOS INFOS ICI ---
+  const config = {
+    heuresOuverture: `À PARTIR DU 04/08/25<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00`,
+    emailCommande: "FACOPYBXL@PROXIMUS.BE",
+    emailSelfService: "UNIFCOPY@OUTLOOK.COM",
+    telephone: "024613005",
+    liensDropbox: {
+      pc1:  "LIEN_DROPBOX_PC_1", pc2:  "LIEN_DROPBOX_PC_2", pc3:  "LIEN_DROPBOX_PC_3",
+      pc4:  "LIEN_DROPBOX_PC_4", pc5:  "LIEN_DROPBOX_PC_5", pc6:  "LIEN_DROPBOX_PC_6",
+      pc7:  "LIEN_DROPBOX_PC_7", pc9:  "LIEN_DROPBOX_PC_9", pc10: "LIEN_DROPBOX_PC_10",
+      pcA:  "LIEN_DROPBOX_PC_A", pcB:  "LIEN_DROPBOX_PC_B", pcC:  "LIEN_DROPBOX_PC_C"
+    }
+  };
+  // --- FIN DU BLOC DE CONFIGURATION ---
 
-document.addEventListener('DOMContentLoaded', () => {
-
-  // --- INITIALISATION DE LA PAGE ---
-  function initialiserPage() {
-    // Remplir les textes et liens depuis la config
-    document.getElementById('orderOnlineLink').href = config.lienCommandeEnLigne;
-    document.getElementById('hoursContent').innerHTML = config.heuresOuverture;
-    
-    // Contenu de l'overlay contact
-    document.getElementById('contactsContent').innerHTML = `
-      <p>TELEPHONE :<br>${config.telephone}</p>
-      <button onclick="window.location.href='tel:${config.telephone.replace(/\s/g, '')}'">APPELER</button>
-      <br><br>
-      <p>EMAIL POUR COMMANDES :<br>${config.emailCommande}</p>
-      <button onclick="window.location.href='mailto:${config.emailCommande}'">POSER UNE QUESTION</button>
-    `;
+  // --- FONCTION DE MISE À JOUR INITIALE ---
+  function initialiserLaPage() {
+    document.getElementById('horaires-contenu').innerHTML = config.heuresOuverture;
+    document.querySelector('#orderMailOverlay div div').textContent = config.emailCommande;
+    document.querySelector('#orderMailOverlay button[onclick]').setAttribute('onclick', `window.location.href='mailto:${config.emailCommande}'`);
+    document.querySelector('#contactsOverlay .contact-row:nth-child(1) div').innerHTML = `<span>TELEPHONE :</span><br>${config.telephone.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4')}`;
+    document.querySelector('#contactsOverlay .contact-row:nth-child(2) div').innerHTML = `<span>MAIL :</span><br>${config.emailCommande}`;
+    document.getElementById('callBtn').onclick = () => { window.location.href = `tel:+32${config.telephone.substring(1)}`; };
+    document.getElementById('askQuestionBtn').onclick = () => { window.location.href = `mailto:${config.emailCommande}`; };
   }
   
-  // --- GESTIONNAIRES D'ÉVÉNEMENTS (CLICS SUR LES BOUTONS) ---
+  // --- ÉLÉMENTS DU DOM ---
+  const mainDashboard = document.getElementById('main-dashboard');
+  const scannerView = document.getElementById('scanner-view');
+  
+  // --- FONCTIONS ET ÉVÉNEMENTS ---
+  document.addEventListener('DOMContentLoaded', () => {
+    initialiserLaPage();
 
-  // Affichage des overlays
-  document.getElementById('depositBtn').addEventListener('click', () => {
-    document.getElementById('pcSelectionOverlay').style.display = 'flex';
-  });
-  document.getElementById('hoursBtn').addEventListener('click', () => {
-    document.getElementById('hoursOverlay').style.display = 'flex';
-  });
-  document.getElementById('contactsBtn').addEventListener('click', () => {
-    document.getElementById('contactsOverlay').style.display = 'flex';
-  });
-
-  // Fermeture des overlays
-  document.querySelectorAll('.close-overlay-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      const overlayId = button.dataset.overlay;
-      document.getElementById(overlayId).style.display = 'none';
+    // Gestion des overlays
+    const overlays = {
+      hoursBtn: document.getElementById('hoursOverlay'),
+      contactsBtn: document.getElementById('contactsOverlay'),
+      'order-by-mail-btn': document.getElementById('orderMailOverlay'),
+      depositFileBtn: document.getElementById('printerSelectOverlay')
+    };
+    Object.keys(overlays).forEach(btnId => {
+      document.getElementById(btnId).addEventListener('click', () => overlays[btnId].style.display = 'flex');
     });
-  });
+    document.querySelectorAll('.close-overlay-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.overlay').style.display = 'none';
+      });
+    });
 
-  // Logique de sélection du PC
-  document.querySelectorAll('.pc-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      const pcId = button.dataset.pc;
-      const dropboxLink = config.liensDropbox[pcId];
-      if (dropboxLink && dropboxLink !== `#LIEN_DROPBOX_${pcId.toUpperCase()}`) {
-        window.open(dropboxLink, '_blank');
-        document.getElementById('pcSelectionOverlay').style.display = 'none';
-      } else {
-        alert("Le lien pour ce PC n'est pas encore configuré.");
+    // Boutons de choix d'imprimante (Dépôt Dropbox)
+    document.querySelectorAll('.printer-choice-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const linkId = button.dataset.linkId;
+        const dropboxUrl = config.liensDropbox[linkId];
+        if (dropboxUrl && dropboxUrl.startsWith('https')) {
+          window.open(dropboxUrl, '_blank');
+          document.getElementById('printerSelectOverlay').style.display = 'none';
+        } else {
+          alert('Lien de dépôt non configuré pour ce PC.');
+        }
+      });
+    });
+
+    // Boutons d'envoi par E-mail
+    document.getElementById('haveFileOnPhoneBtn').addEventListener('click', () => {
+      window.location.href = `mailto:${config.emailSelfService}`;
+    });
+    document.getElementById('transferEmailBtn').addEventListener('click', () => {
+      navigator.clipboard.writeText(config.emailSelfService).then(() => {
+        document.getElementById('copyEmailOverlay').style.display = 'flex';
+      }).catch(err => alert("Erreur de copie. Veuillez noter l'adresse manuellement."));
+    });
+
+    // Scanner QR Code
+    let stream, scanning = false;
+    const video = document.getElementById('video');
+    
+    document.getElementById('scanQRCodeBtn').addEventListener('click', async () => {
+      mainDashboard.style.display = 'none';
+      scannerView.style.display = 'block';
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+        video.play();
+        scanning = true;
+        scanLoop();
+      } catch (err) {
+        alert('Impossible d’accéder à la caméra. Vérifiez les autorisations.');
+        resetScan();
       }
     });
-  });
 
-  // Logique des boutons E-mail
-  document.getElementById('emailNewBtn').addEventListener('click', () => {
-    window.location.href = `mailto:${config.emailImpression}`;
+    document.getElementById('cancelScanBtn').addEventListener('click', resetScan);
+    
+    function scanLoop() {
+      if (!scanning || !video.videoWidth) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      if (code) {
+        scanning = false;
+        if(stream) stream.getTracks().forEach(t => t.stop());
+        document.getElementById('scanResult').innerHTML = `<a href="${code.data}" target="_blank" rel="noopener noreferrer">${code.data}</a>`;
+        document.getElementById('scanResult').style.display = 'block';
+      } else if (scanning) {
+        requestAnimationFrame(scanLoop);
+      }
+    }
+    
+    function resetScan() {
+      scanning = false;
+      if(stream) stream.getTracks().forEach(t => t.stop());
+      stream = null;
+      scannerView.style.display = 'none';
+      mainDashboard.style.display = 'block';
+      document.getElementById('scanResult').style.display = 'none';
+    }
   });
-  
-  document.getElementById('emailForwardBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(config.emailImpression).then(() => {
-      alert(`Adresse e-mail copiée dans le presse-papiers :\n\n${config.emailImpression}\n\nMaintenant, allez dans votre application mail pour transférer votre message.`);
-    }).catch(err => {
-      alert(`Erreur de copie. Veuillez noter l'adresse manuellement :\n\n${config.emailImpression}`);
-    });
-  });
-  
-  document.getElementById('orderEmailBtn').addEventListener('click', () => {
-      window.location.href = `mailto:${config.emailCommande}`;
-  });
-
-  // Initialiser la page au chargement
-  initialiserPage();
-  
-  // Le code pour le scan QR (non inclus ici pour la clarté) peut être ajouté ci-dessous
-  // ... votre code pour la fonction scanQRBtn ...
-});
 </script>
 </body>
 </html>
