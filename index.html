@@ -93,6 +93,11 @@
     color: #ffb347; border-color: #ffb347;
     box-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347, 0 0 80px #ffb347;
   }
+
+  #startBtn {
+    color: red;
+  }
+  
   button::before, .link-button::before {
     content: "";
     position: absolute; top: -50%; left: -50%;
@@ -234,10 +239,10 @@
 <body>
   <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
   <main>
-    <button id="hoursBtn">HEURES D'OUVERTURE</button>
-    <button id="startBtn">IMPRIMER SUR PLACE</button>  
+    <button id="startBtn">JE SUIS SUR PLACE</button>  
     <a href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button" id="orderBtn">COMMANDER EN LIGNE</a>
     <button id="mailBtn">COMMANDER PAR MAIL</button>
+    <button id="hoursBtn">HEURES D'OUVERTURE</button>
     <button id="contactsBtn">CONTACTS</button>
     
     <video id="video" playsinline autoplay muted></video>
@@ -263,9 +268,20 @@
   </div>
   
   <div id="printOverlay" class="overlay">
-    <button id="startMailProcessBtn">ENVOYER PAR MAIL</button>
-    <button id="scanBtn">ENVOYER PAR QR&nbsp;CODE</button>
+    <button id="startMailProcessBtn">ENVOYER FICHIERS PAR MAIL</button>
+    <button id="driveBtn">DEPOSER FICHIERS DANS LE DRIVE</button>
+    <button id="scanBtn">ENVOYER FICHIERS PAR QR CODE</button>
     <button id="closePrintBtn">FERMER</button>
+  </div>
+
+  <div id="driveOverlay" class="overlay">
+    <div class="overlay-content">
+        Cliquez sur SUIVANT ci-dessous pour ouvrir une page de transfert sécurisée.
+        <br><br>
+        Une fois vos fichiers envoyés, double-cliquez sur l'icône DRIVE du PC en face de vous pour retrouver et imprimer vos fichiers.
+    </div>
+    <button id="driveNextBtn">SUIVANT</button>
+    <button id="closeDriveBtn">RETOUR</button>
   </div>
 
   <div id="selfServiceMailOverlay" class="overlay">
@@ -293,8 +309,8 @@
       </div>
       <div class="contact-row">
           <div class="contact-info">
-                <span>MAIL :</span><br>
-                FACOPYBXL@PROXIMUS.BE
+              <span>MAIL :</span><br>
+              FACOPYBXL@PROXIMUS.BE
           </div>
           <div class="contact-action">
               <button id="askQuestionBtn">POSER UNE QUESTION</button>
@@ -306,7 +322,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
-  // Le code Javascript reste inchangé
   // --- ÉLÉMENTS DU DOM ---
   const mailBtn = document.getElementById('mailBtn');
   const mailOverlay = document.getElementById('mailOverlay');
@@ -332,6 +347,11 @@
   const callBtn = document.getElementById('callBtn');
   const askQuestionBtn = document.getElementById('askQuestionBtn');
   const closeContactsBtn = document.getElementById('closeContactsBtn');
+  
+  const driveBtn = document.getElementById('driveBtn');
+  const driveOverlay = document.getElementById('driveOverlay');
+  const driveNextBtn = document.getElementById('driveNextBtn');
+  const closeDriveBtn = document.getElementById('closeDriveBtn');
 
 
   let stream, scanning = false;
@@ -409,6 +429,21 @@
   });
   cancelMailProcessBtn.addEventListener('click', () => {
       selfServiceMailOverlay.style.display = 'none';
+      showAllMenus();
+  });
+  
+  // GESTION DU DRIVE
+  driveBtn.addEventListener('click', () => {
+      printOverlay.style.display = 'none';
+      driveOverlay.style.display = 'flex';
+  });
+  driveNextBtn.addEventListener('click', () => {
+      window.open('https://www.dropbox.com/request/nrlRWkjaBE2hBzaKBeWZ', '_blank');
+      driveOverlay.style.display = 'none';
+      showAllMenus();
+  });
+  closeDriveBtn.addEventListener('click', () => {
+      driveOverlay.style.display = 'none';
       showAllMenus();
   });
 
