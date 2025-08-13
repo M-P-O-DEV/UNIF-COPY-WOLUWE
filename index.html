@@ -8,6 +8,8 @@
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
   * { box-sizing: border-box; }
   body { margin: 0; background: linear-gradient(135deg, #1a1a1a, #2f2f2f, #121212); font-family: 'Orbitron', sans-serif; color: #ff6f00; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; user-select: none; }
+  /* CORRECTION N°3 : Classe pour bloquer le scroll */
+  body.overlay-active { overflow: hidden; }
   header { width: 100%; padding: 25px 0; background: linear-gradient(90deg, #ff6f00, #ffb347); color: black; font-size: 2.8rem; font-weight: 900; text-align: center; letter-spacing: 2px; position: relative; overflow: hidden; border-bottom: 4px solid #ff6f00; }
   main { width: 100%; max-width: 700px; padding: 30px 25px; text-align: center; }
   button, .link-button { position: relative; background: transparent; border: 3px solid #ff6f00; color: #ff6f00; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.2rem; padding: 14px 25px; border-radius: 10px; cursor: pointer; overflow: hidden; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1.5px; user-select: none; box-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347; margin: 10px 0; display: inline-block; text-decoration: none; width: 100%; }
@@ -37,14 +39,22 @@
       <h2 class="section-title">INFORMATIONS</h2>
       <div class="button-group"><button id="hoursBtn">Heures d'ouverture</button><button id="contactsBtn">Contacts</button></div>
     </div>
-    <div id="scanner-view" style="display:none; width:100%;"><video id="video" playsinline autoplay muted></video><div style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;">Sur le PC en face de vous, double-cliquez sur l'icône "SCAN QR Code".<br>Un code QR va apparaître sur l'écran du PC.</div><button id="cancelScanBtn" style="margin-top: 15px;">ANNULER</button><div id="scanResult" style="margin-top: 20px; font-size: 1.5rem; display:none; color: #ffb347;"></div></div>
+    <div id="scanner-view" style="display:none; width:100%;"><video id="video" playsinline autoplay muted></video><div style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;">Visez le QR code affiché sur l'écran du PC.</div><button id="cancelScanBtn" style="margin-top: 15px;">ANNULER</button><div id="scanResult" style="margin-top: 20px; font-size: 1.5rem; display:none; color: #ffb347;"></div></div>
   </main>
   
   <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
   <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"></div><div id="contact-mail"></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
   <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
   <div id="printerSelectOverlay" class="overlay"><div class="overlay-content"><h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3><div class="printer-grid" id="printer-grid-container"></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div></div>
-  <div id="copyEmailOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px;"><h3 style="font-size: 1.8rem; color: #00ff00;">✅ Adresse Copiée !</h3><p style="font-size: 1rem; line-height: 1.5;">Maintenant, rendez-vous dans votre application e-mail pour transférer votre message.</p><button class="close-overlay-btn">J'AI COMPRIS</button></div></div>
+  <div id="copyEmailOverlay" class="overlay">
+      <div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;">
+        <h3 style="font-size: 1.5rem; color: #00ff00; margin-top:0;">✅ C'est fait ! Adresse copiée.</h3>
+        <p style="font-size: 1rem; line-height: 1.5;">
+            Vous pouvez maintenant aller dans votre application e-mail, trouver le message à transférer, et **coller** notre adresse dans le champ du destinataire.
+        </p>
+        <button class="close-overlay-btn">J'AI COMPRIS</button>
+      </div>
+  </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
@@ -83,6 +93,7 @@
             if (dropboxUrl && dropboxUrl.startsWith('https')) {
                 window.open(dropboxUrl, '_blank');
                 document.getElementById('printerSelectOverlay').style.display = 'none';
+                document.body.classList.remove('overlay-active'); // Anti-scroll
             } else {
                 alert('Lien de dépôt non configuré pour ce PC.');
             }
@@ -94,50 +105,71 @@
     const mainDashboard = document.getElementById('main-dashboard');
     const scannerView = document.getElementById('scanner-view');
     
+    // CORRECTION N°3 : Fonction pour gérer l'anti-scroll
+    function toggleOverlay(overlayElement, show) {
+        if (show) {
+            overlayElement.style.display = 'flex';
+            document.body.classList.add('overlay-active');
+        } else {
+            overlayElement.style.display = 'none';
+            document.body.classList.remove('overlay-active');
+        }
+    }
+
     // Ouvrir les overlays
-    document.getElementById('hoursBtn').addEventListener('click', () => document.getElementById('hoursOverlay').style.display = 'flex');
-    document.getElementById('contactsBtn').addEventListener('click', () => document.getElementById('contactsOverlay').style.display = 'flex');
-    document.getElementById('orderByMailBtn').addEventListener('click', () => document.getElementById('orderMailOverlay').style.display = 'flex');
-    document.getElementById('depositFileBtn').addEventListener('click', () => document.getElementById('printerSelectOverlay').style.display = 'flex');
+    document.getElementById('hoursBtn').addEventListener('click', () => toggleOverlay(document.getElementById('hoursOverlay'), true));
+    document.getElementById('contactsBtn').addEventListener('click', () => toggleOverlay(document.getElementById('contactsOverlay'), true));
+    document.getElementById('orderByMailBtn').addEventListener('click', () => toggleOverlay(document.getElementById('orderMailOverlay'), true));
+    document.getElementById('depositFileBtn').addEventListener('click', () => toggleOverlay(document.getElementById('printerSelectOverlay'), true));
     
     // Fermer tous les overlays
     document.querySelectorAll('.close-overlay-btn').forEach(btn => {
-      btn.addEventListener('click', () => btn.closest('.overlay').style.display = 'none');
+      btn.addEventListener('click', () => toggleOverlay(btn.closest('.overlay'), false));
     });
 
     // Actions des boutons du tableau de bord
     document.getElementById('haveFileOnPhoneBtn').addEventListener('click', () => window.location.href = `mailto:${config.emailSelfService}`);
     document.getElementById('transferEmailBtn').addEventListener('click', () => {
       navigator.clipboard.writeText(config.emailSelfService)
-        .then(() => document.getElementById('copyEmailOverlay').style.display = 'flex')
+        .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
         .catch(() => alert("Erreur de copie."));
     });
 
     // --- LOGIQUE DU SCANNER QR CODE ---
     let stream, scanning = false;
     const video = document.getElementById('video');
+    const scanResultDiv = document.getElementById('scanResult');
     
-    document.getElementById('scanQRCodeBtn').addEventListener('click', async () => {
+    document.getElementById('scanQRCodeBtn').addEventListener('click', () => {
       mainDashboard.style.display = 'none';
       scannerView.style.display = 'block';
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        video.srcObject = stream;
-        await video.play();
-        scanning = true;
-        scanLoop();
-      } catch (err) {
-        alert('Impossible d’accéder à la caméra.');
-        resetScan();
-      }
+      video.style.display = 'block'; // S'assurer que la vidéo est visible
+      startCamera();
     });
 
     document.getElementById('cancelScanBtn').addEventListener('click', resetScan);
     
+    // CORRECTION N°2 : Logique caméra améliorée
+    async function startCamera() {
+      try {
+        const constraints = { video: { facingMode: "environment" } };
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          video.play();
+          scanning = true;
+          requestAnimationFrame(scanLoop);
+        };
+      } catch (err) {
+        console.error("Erreur caméra:", err);
+        alert('Impossible d’accéder à la caméra. Veuillez vérifier les autorisations dans les paramètres de votre navigateur.');
+        resetScan();
+      }
+    }
+    
     function scanLoop() {
-      if (!scanning || !video.videoWidth) return;
-      requestAnimationFrame(() => {
-        if (!scanning) return;
+      if (!scanning) return;
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -147,23 +179,24 @@
         const code = jsQR(imageData.data, imageData.width, imageData.height);
         if (code) {
           scanning = false;
-          if (stream) stream.getTracks().forEach(t => t.stop());
-          const resultDiv = document.getElementById('scanResult');
-          resultDiv.innerHTML = `<a href="${code.data}" target="_blank" rel="noopener noreferrer">${code.data}</a>`;
-          resultDiv.style.display = 'block';
-        } else {
-          scanLoop();
+          stream.getTracks().forEach(track => track.stop());
+          scanResultDiv.innerHTML = `Lien détecté : <a href="${code.data}" target="_blank" rel="noopener noreferrer">${code.data}</a>`;
+          scanResultDiv.style.display = 'block';
         }
-      });
+      }
+      if (scanning) {
+        requestAnimationFrame(scanLoop);
+      }
     }
     
     function resetScan() {
       scanning = false;
-      if (stream) stream.getTracks().forEach(t => t.stop());
+      if (stream) stream.getTracks().forEach(track => track.stop());
       stream = null;
+      video.style.display = 'none';
       scannerView.style.display = 'none';
       mainDashboard.style.display = 'block';
-      document.getElementById('scanResult').style.display = 'none';
+      scanResultDiv.style.display = 'none';
     }
   });
 </script>
