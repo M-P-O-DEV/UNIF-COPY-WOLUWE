@@ -18,28 +18,7 @@
   .bloc-description { font-size: 0.9rem; color: #ffb347; margin-bottom: 15px; line-height: 1.4; }
   .button-group { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
   .button-group button, .button-group .link-button { flex: 1 1 200px; min-width: 200px; }
-  
-  /* CORRECTION N°1 : Style pour la vue du scanner */
-  #scanner-view { display:none; width:100%; display: flex; flex-direction: column; align-items: center; }
-  #video { 
-    width: 100%; 
-    max-width: 400px; /* Taille réduite */
-    height: auto;
-    border-radius: 15px; 
-    box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00; 
-    background: #121212; 
-  }
-  #scanInstruction {
-    margin-top: 20px;
-    background: rgba(0,0,0,0.8);
-    color: #ffb347;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #ffb347;
-    font-size: 1.1rem;
-    line-height: 1.4;
-  }
-  
+  video { width: 100%; max-width: 600px; border-radius: 15px; box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00; position: relative; display: none; background: #121212; }
   .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(18, 18, 18, 0.95); color: #ff6f00; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; z-index: 9999; }
   .overlay-content { max-width: 500px; }
   .printer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; width: 100%; margin-bottom: 20px; }
@@ -59,24 +38,36 @@
       <h2 class="section-title">INFORMATIONS</h2>
       <div class="button-group"><button id="hoursBtn">Heures d'ouverture</button><button id="contactsBtn">Contacts</button></div>
     </div>
-    <div id="scanner-view">
-      <div id="scanInstruction"></div>
-      <video id="video" playsinline autoplay muted></video>
-      <button id="cancelScanBtn" style="margin-top: 20px;">ANNULER</button>
-    </div>
+    <div id="scanner-view" style="display:none; width:100%;"><video id="video" playsinline autoplay muted></video><div id="scanInstruction" style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;"></div><button id="cancelScanBtn" style="margin-top: 15px;">ANNULER</button></div>
   </main>
   
   <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
   <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"></div><div id="contact-mail"></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
   <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
   <div id="printerSelectOverlay" class="overlay"><div class="overlay-content"><h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3><div class="printer-grid" id="printer-grid-container"></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div></div>
-  <div id="copyEmailOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;"><p style="font-size: 1.2rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;" id="copy-confirm-text"></p><p style="font-size: 1rem; line-height: 1.5;">Vous pouvez maintenant aller dans votre application e-mail pour transférer votre message.</p><button class="close-overlay-btn">J'AI COMPRIS</button></div></div>
-  <div id="scanResultOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;"><h3 style="font-size: 1.5rem; margin-top:0;">Lien Détecté</h3><p id="scan-result-link" style="font-size: 1rem; color: #ffb347; word-break: break-all; margin: 20px 0;"></p><div class="button-group"><button id="followScanLinkBtn">SUIVRE LE LIEN</button><button id="cancelScanResultBtn">ANNULER</button></div></div></div>
+  <div id="copyEmailOverlay" class="overlay">
+      <div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;">
+        <p style="font-size: 1.2rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;" id="copy-confirm-text"></p>
+        <p style="font-size: 1rem; line-height: 1.5;">Vous pouvez maintenant aller dans votre application e-mail pour transférer votre message.</p>
+        <button class="close-overlay-btn">J'AI COMPRIS</button>
+      </div>
+  </div>
+  <div id="scanResultOverlay" class="overlay">
+      <div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;">
+        <h3 style="font-size: 1.5rem; margin-top:0;">Lien Détecté</h3>
+        <p id="scan-result-link" style="font-size: 1rem; color: #ffb347; word-break: break-all; margin: 20px 0;"></p>
+        <div class="button-group">
+            <button id="followScanLinkBtn">SUIVRE LE LIEN</button>
+            <button id="rescanBtn">RECOMMENCER</button>
+        </div>
+      </div>
+  </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // --- BLOC DE CONFIGURATION ---
     const config = {
       heuresOuverture: `À PARTIR DU 04/08/25<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00`,
       emailCommande: "FACOPYBXL@PROXIMUS.BE",
@@ -91,12 +82,14 @@
       }
     };
 
+    // --- INITIALISATION DE LA PAGE ---
     document.getElementById('horaires-contenu').innerHTML = config.heuresOuverture;
     document.getElementById('orderOnlineLink').href = config.lienCommandeEnLigne;
     document.getElementById('order-mail-address').textContent = config.emailCommande;
     document.getElementById('order-mail-action-btn').onclick = () => window.location.href = `mailto:${config.emailCommande}`;
     document.getElementById('contact-phone').innerHTML = `<span>TELEPHONE :</span><br>${config.telephone.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4')}<button onclick="window.location.href='tel:+32${config.telephone.substring(1)}'" style="margin-top:10px;">APPELER</button>`;
     document.getElementById('contact-mail').innerHTML = `<span>MAIL :</span><br>${config.emailCommande}<button onclick="window.location.href='mailto:${config.emailCommande}'" style="margin-top:10px;">POSER UNE QUESTION</button>`;
+    // CORRECTION N°2 : Mise à jour de l'instruction du scanner
     document.getElementById('scanInstruction').innerHTML = `Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.`;
 
     const printerGrid = document.getElementById('printer-grid-container');
@@ -117,6 +110,7 @@
         printerGrid.appendChild(button);
     }
 
+    // --- GESTION DES CLICS SUR LES BOUTONS ---
     const mainDashboard = document.getElementById('main-dashboard');
     const scannerView = document.getElementById('scanner-view');
     
@@ -141,28 +135,31 @@
 
     document.getElementById('haveFileOnPhoneBtn').addEventListener('click', () => window.location.href = `mailto:${config.emailSelfService}`);
     document.getElementById('transferEmailBtn').addEventListener('click', () => {
+      // CORRECTION N°1 : Mise à jour du texte de confirmation
       document.getElementById('copy-confirm-text').textContent = `L'adresse ${config.emailSelfService} a été copiée dans votre presse-papier.`;
       navigator.clipboard.writeText(config.emailSelfService)
         .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
         .catch(() => alert("Erreur de copie."));
     });
 
+    // --- LOGIQUE DU SCANNER QR CODE ---
     let stream, scanning = false;
     const video = document.getElementById('video');
     const scanResultOverlay = document.getElementById('scanResultOverlay');
     const scanResultLink = document.getElementById('scan-result-link');
     const followScanLinkBtn = document.getElementById('followScanLinkBtn');
+    const rescanBtn = document.getElementById('rescanBtn');
     
     document.getElementById('scanQRCodeBtn').addEventListener('click', () => {
       mainDashboard.style.display = 'none';
-      scannerView.style.display = 'flex';
+      scannerView.style.display = 'block';
+      video.style.display = 'block';
       startCamera();
     });
 
     document.getElementById('cancelScanBtn').addEventListener('click', resetScan);
     
     async function startCamera() {
-      video.style.display = 'block';
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
@@ -191,15 +188,10 @@
             scanning = false;
             if (stream) stream.getTracks().forEach(track => track.stop());
             
+            // CORRECTION N°3 : Afficher le résultat dans l'overlay
             scanResultLink.textContent = code.data;
-            followScanLinkBtn.onclick = () => {
-                window.open(code.data, '_blank');
-                resetScan(); // Retourne au menu principal après avoir suivi le lien
-            };
-            // CORRECTION N°3 : Le bouton s'appelle "ANNULER" et ferme l'overlay
-            const cancelScanResultBtn = document.getElementById('cancelScanResultBtn');
-            cancelScanResultBtn.textContent = 'ANNULER';
-            cancelScanResultBtn.onclick = () => {
+            followScanLinkBtn.onclick = () => window.open(code.data, '_blank');
+            rescanBtn.onclick = () => {
                 toggleOverlay(scanResultOverlay, false);
                 resetScan();
             };
