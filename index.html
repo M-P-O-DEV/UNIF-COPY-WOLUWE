@@ -68,6 +68,11 @@
   #copy-instructions li {
     margin-bottom: 10px;
   }
+  /* --- MODIFICATION CSS --- */
+  #copy-confirm-title {
+    word-break: break-all;
+  }
+  /* --- FIN MODIFICATION CSS --- */
 </style>
 </head>
 <body>
@@ -263,7 +268,6 @@
     // Mails
     document.getElementById('haveFileOnPhoneBtn').addEventListener('click', () => window.location.href = `mailto:${config.emailSelfService}`);
 
-    // --- MODIFICATION SCRIPT ---
     document.getElementById('transferEmailBtn').addEventListener('click', () => {
       // Mise à jour du contenu de la fenêtre de confirmation
       document.getElementById('copy-confirm-title').innerHTML = `Notre adresse <strong>${config.emailSelfService}</strong> a été copiée dans votre presse-papiers !`;
@@ -280,7 +284,6 @@
         .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
         .catch(() => alert("Erreur lors de la copie de l'adresse e-mail."));
     });
-    // --- FIN MODIFICATION SCRIPT ---
 
     // Vues
     document.getElementById('downloadAppBtn').addEventListener('click', () => showView('download-view'));
