@@ -29,7 +29,7 @@
 
   <main>
     <div id="main-dashboard">
-      <h2 class="section-title">IMPRIMER UN FICHIER SUR PLACE</h2>
+      <h2 class="section-title">IMPRESSION SELF-SERVICE</h2>
       <div class="bloc"><h3>Dépôt Rapide (Recommandé)</h3><p class="bloc-description">Pour tous vos fichiers (PDF, photos...). Idéal pour envoyer plusieurs fichiers à la fois.</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
       <div class="bloc"><h3>Envoi par E-mail</h3><p class="bloc-description">Choisissez la situation qui vous correspond.</p><div class="button-group"><button id="haveFileOnPhoneBtn">J'ai un fichier sur mon téléphone</button><button id="transferEmailBtn">Je veux transférer un e-mail</button></div></div>
       <div class="bloc"><h3>Transfert par QR Code</h3><p class="bloc-description">Pour une connexion directe et rapide entre votre téléphone et le PC.</p><button id="scanQRCodeBtn">Scanner le QR Code du PC</button></div>
@@ -78,7 +78,8 @@
         pc1: "LIEN_DROPBOX_PC_1", pc2: "LIEN_DROPBOX_PC_2", pc3: "LIEN_DROPBOX_PC_3",
         pc4: "LIEN_DROPBOX_PC_4", pc5: "LIEN_DROPBOX_PC_5", pc6: "LIEN_DROPBOX_PC_6",
         pc7: "LIEN_DROPBOX_PC_7", pc9: "LIEN_DROPBOX_PC_9", pc10: "LIEN_DROPBOX_PC_10",
-        pcA: "LIEN_DROPBOX_PC_A", pcB: "LIEN_DROPBOX_PC_B", pcC: "LIEN_DROPBOX_PC_C"
+        pcA: "LIEN_DROPBOX_PC_A", pcB: "LIEN_DROPBOX_PC_B", pcC: "LIEN_DROPBOX_PC_C",
+        pcCaisse: "LIEN_DROPBOX_PC_CAISSE"
       }
     };
 
@@ -89,7 +90,6 @@
     document.getElementById('order-mail-action-btn').onclick = () => window.location.href = `mailto:${config.emailCommande}`;
     document.getElementById('contact-phone').innerHTML = `<span>TELEPHONE :</span><br>${config.telephone.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4')}<button onclick="window.location.href='tel:+32${config.telephone.substring(1)}'" style="margin-top:10px;">APPELER</button>`;
     document.getElementById('contact-mail').innerHTML = `<span>MAIL :</span><br>${config.emailCommande}<button onclick="window.location.href='mailto:${config.emailCommande}'" style="margin-top:10px;">POSER UNE QUESTION</button>`;
-    // CORRECTION N°2 : Mise à jour de l'instruction du scanner
     document.getElementById('scanInstruction').innerHTML = `Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.`;
 
     const printerGrid = document.getElementById('printer-grid-container');
@@ -97,7 +97,12 @@
         const button = document.createElement('button');
         button.className = 'printer-choice-btn';
         button.dataset.linkId = pcId;
-        button.textContent = `PC ${pcId.replace('pc', '').toUpperCase()}`;
+        // Pour gérer le nom "PC CAISSE" correctement
+        if (pcId === 'pcCaisse') {
+            button.textContent = 'PC CAISSE';
+        } else {
+            button.textContent = `PC ${pcId.replace('pc', '').toUpperCase()}`;
+        }
         button.addEventListener('click', () => {
             const dropboxUrl = config.liensDropbox[pcId];
             if (dropboxUrl && dropboxUrl.startsWith('https')) {
@@ -135,7 +140,6 @@
 
     document.getElementById('haveFileOnPhoneBtn').addEventListener('click', () => window.location.href = `mailto:${config.emailSelfService}`);
     document.getElementById('transferEmailBtn').addEventListener('click', () => {
-      // CORRECTION N°1 : Mise à jour du texte de confirmation
       document.getElementById('copy-confirm-text').textContent = `L'adresse ${config.emailSelfService} a été copiée dans votre presse-papier.`;
       navigator.clipboard.writeText(config.emailSelfService)
         .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
@@ -188,7 +192,6 @@
             scanning = false;
             if (stream) stream.getTracks().forEach(track => track.stop());
             
-            // CORRECTION N°3 : Afficher le résultat dans l'overlay
             scanResultLink.textContent = code.data;
             followScanLinkBtn.onclick = () => window.open(code.data, '_blank');
             rescanBtn.onclick = () => {
