@@ -101,21 +101,21 @@
     </div>
   </main>
   
-  <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
+  <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"></div><div id="contact-mail"></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
-  <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
+  <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   
   <div id="printerSelectOverlay" class="overlay">
     <div class="overlay-content">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
         <div class="printer-grid" id="printer-grid-container"></div>
+        <!-- Les boutons du bas seront ajoutés ici par le script -->
     </div>
   </div>
 
   <div id="copyEmailOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;"><p style="font-size: 1.2rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;" id="copy-confirm-text"></p><p style="font-size: 1rem; line-height: 1.5;">Vous pouvez maintenant aller dans votre application e-mail pour transférer votre message.</p><button class="close-overlay-btn">J'AI COMPRIS</button></div></div>
   <div id="scanResultOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;"><h3 style="font-size: 1.5rem; margin-top:0;">Lien Détecté</h3><p id="scan-result-link" style="font-size: 1rem; color: #ffb347; word-break: break-all; margin: 20px 0;"></p><div class="button-group"><button id="followScanLinkBtn">SUIVRE LE LIEN</button><button id="rescanBtn">RECOMMENCER</button></div></div></div>
   
-  <!-- --- MODIFICATION HTML --- -->
   <div id="shareOverlay" class="overlay">
     <div class="overlay-content">
       <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Partager l'application avec vos amis</h3>
@@ -124,9 +124,8 @@
       <div class="share-popup-separator">OU</div>
       <button id="nativeShareBtn">Envoyer le lien</button>
     </div>
-    <button class="close-overlay-btn" style="margin-top:20px;">FERMER</button>
+    <button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button>
   </div>
-  <!-- --- FIN MODIFICATION HTML --- -->
   
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
@@ -156,9 +155,11 @@
     document.getElementById('contact-mail').innerHTML = `<span>MAIL :</span><br>${config.emailCommande}<button onclick="window.location.href='mailto:${config.emailCommande}'" style="margin-top:10px;">POSER UNE QUESTION</button>`;
     document.getElementById('scanInstruction').innerHTML = `Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.`;
 
+    // --- MODIFICATION SCRIPT (RETOUR À LA VERSION PRÉCÉDENTE) ---
     const printerGrid = document.getElementById('printer-grid-container');
     const overlayContent = printerGrid.parentElement;
 
+    // Création d'un conteneur pour les boutons du bas
     const caisseContainer = document.createElement('div');
     caisseContainer.style.width = '100%';
     caisseContainer.style.marginTop = '20px';
@@ -180,15 +181,17 @@
 
         if (pcId === 'pcCaisse') {
             button.textContent = 'PC CAISSE';
-            caisseContainer.appendChild(button);
+            caisseContainer.appendChild(button); // Ajout au conteneur du bas
         } else {
             button.textContent = `PC ${pcId.replace('pc', '').toUpperCase()}`;
-            printerGrid.appendChild(button);
+            printerGrid.appendChild(button); // Ajout à la grille normale
         }
     }
 
+    // Ajout du conteneur après la grille
     printerGrid.after(caisseContainer);
 
+    // Création et ajout du bouton RETOUR sous le bouton PC CAISSE
     const newBackButton = document.createElement('button');
     newBackButton.textContent = 'RETOUR';
     newBackButton.className = 'close-overlay-btn';
@@ -197,6 +200,7 @@
         toggleOverlay(document.getElementById('printerSelectOverlay'), false);
     });
     caisseContainer.appendChild(newBackButton);
+    // --- FIN MODIFICATION SCRIPT ---
 
     // --- GESTION DES VUES PRINCIPALES (MENU, SCANNER, TÉLÉCHARGER) ---
     const views = document.querySelectorAll('.view');
