@@ -70,17 +70,18 @@
     margin-bottom: 10px;
   }
   /* --- MODIFICATION CSS --- */
+  #copyEmailOverlay .overlay-content {
+    width: 95%; /* Elargit spécifiquement cette fenêtre */
+  }
   #copied-email-box {
     color: #ffb347;
     font-weight: bold;
-    font-size: 1rem; /* Taille de police légèrement réduite */
+    font-size: 1rem;
     margin: 15px 0;
     padding: 10px;
     border: 1px solid #ffb347;
     border-radius: 8px;
-    white-space: nowrap; /* Empêche le retour à la ligne */
-    overflow: hidden; /* Cache tout ce qui pourrait déborder */
-    text-overflow: ellipsis; /* Ajoute "..." si le texte est encore trop long */
+    overflow-wrap: break-word; /* Permet au texte de revenir à la ligne proprement */
     text-align: center;
   }
   /* --- FIN MODIFICATION CSS --- */
