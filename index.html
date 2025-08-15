@@ -75,12 +75,14 @@
   }
   
   #copied-email-address {
-    color: #00ff00;       /* L'adresse e-mail est maintenant en vert */
+    color: #00ff00;       /* L'adresse e-mail est en vert */
     font-weight: bold;
-    font-size: 1.3rem;
+    font-size: 1.3rem;    /* Taille par défaut */
     margin-bottom: 15px;
-    white-space: nowrap; /* Empêche le texte de se couper */
+    white-space: nowrap;  /* Toujours sur une seule ligne */
     text-align: center;
+    max-width: 100%;      /* Ne dépasse jamais le cadre */
+    display: block;       /* S'assure d'occuper toute la largeur dispo */
   }
   #copy-confirm-text {
     color: #ffb347;      /* Texte de confirmation harmonisé avec le reste du site */
@@ -268,6 +270,33 @@
         }
     }
 
+    // --- FONCTION: ADAPTER LA TAILLE DU TEXTE POUR TENIR SUR UNE LIGNE SANS DÉPASSER ---
+    function fitTextToOneLine(el, minPx = 10, maxPx = 40) {
+      if (!el) return;
+      // réinitialise à une taille max raisonnable, puis réduit si nécessaire
+      el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) || 20) + 'px';
+      // si l'élément est caché, attendre la prochaine frame
+      const doFit = () => {
+        let size = parseFloat(getComputedStyle(el).fontSize);
+        // augmenter jusqu'au max si ça tient
+        while (size < maxPx && el.scrollWidth <= el.clientWidth) {
+          size += 1;
+          el.style.fontSize = size + 'px';
+        }
+        // si on a dépassé, recule d'un pas
+        if (el.scrollWidth > el.clientWidth) {
+          size -= 1;
+          el.style.fontSize = size + 'px';
+        }
+        // réduire si ça ne tient pas
+        while (el.scrollWidth > el.clientWidth && size > minPx) {
+          size -= 1;
+          el.style.fontSize = size + 'px';
+        }
+      };
+      requestAnimationFrame(doFit);
+    }
+
     // --- CONNEXION DES BOUTONS AUX ACTIONS ---
 
     // Overlays
@@ -285,8 +314,12 @@
 
     document.getElementById('transferEmailBtn').addEventListener('click', () => {
       // Mise à jour du contenu de la fenêtre de confirmation
-      document.getElementById('copied-email-address').textContent = config.emailSelfService;
-      document.getElementById('copy-confirm-text').textContent = 'Adresse e-mail copiée !';
+      const emailEl = document.getElementById('copied-email-address');
+      const confirmEl = document.getElementById('copy-confirm-text');
+
+      emailEl.textContent = config.emailSelfService;
+      confirmEl.textContent = 'Adresse e-mail copiée !';
+
       const instructionsList = document.getElementById('copy-instructions');
       instructionsList.innerHTML = `
         <li>Ouvrez votre application d'e-mails.</li>
@@ -297,8 +330,21 @@
 
       // Copie dans le presse-papiers et affichage de la fenêtre
       navigator.clipboard.writeText(config.emailSelfService)
-        .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
+        .then(() => {
+          const overlay = document.getElementById('copyEmailOverlay');
+          toggleOverlay(overlay, true);
+          // Adapter la taille pour que l'e-mail tienne sur une ligne SANS troncature
+          requestAnimationFrame(() => fitTextToOneLine(emailEl, 10, 28));
+        })
         .catch(() => alert("Erreur lors de la copie de l'adresse e-mail."));
+    });
+
+    // Réajuster si l'utilisateur redimensionne l'écran pendant que l'overlay est ouvert
+    window.addEventListener('resize', () => {
+      const overlay = document.getElementById('copyEmailOverlay');
+      if (overlay && overlay.style.display === 'flex') {
+        fitTextToOneLine(document.getElementById('copied-email-address'), 10, 28);
+      }
     });
 
     // Vues
