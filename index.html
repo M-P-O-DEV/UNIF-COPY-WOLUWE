@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="fr"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -85,17 +84,17 @@
   /* --- FIN MODIFICATION CSS --- */
 </style>
 </head>
-<body>
+<body class="">
   <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
 
   <main>
     <div id="main-dashboard" class="view" style="display: block;">
       
-      <h2 class="section-title">IMPRESSIONS<br>SELF-SERVICE</h2>
+      <h2 class="section-title">IMPRESSION<br>SELF-SERVICE</h2>
       
-      <div class="bloc"><h3>Dépôt Rapide (Recommandé)</h3><p class="bloc-description">Pour tous vos fichiers (PDF, photos...). Idéal pour envoyer plusieurs fichiers à la fois.</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
+      <div class="bloc"><h3>Dépôt Rapide (Recommandé)</h3><p class="bloc-description">Le plus simple et le plus rapide</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
       <div class="bloc"><h3>Envoi par E-mail</h3><p class="bloc-description">Choisissez la situation qui vous correspond.</p><div class="button-group"><button id="haveFileOnPhoneBtn">J'ai un fichier sur mon téléphone</button><button id="transferEmailBtn">Je veux transférer un e-mail</button></div></div>
-      <div class="bloc"><h3>Transfert par QR Code</h3><p class="bloc-description">Pour une connexion directe et rapide entre votre téléphone et le PC.</p><button id="scanQRCodeBtn">ENVOYER PAR QR CODE</button></div>
+      <div class="bloc"><p class="bloc-description"></p><button id="scanQRCodeBtn">ENVOYER PAR QR CODE</button></div>
       
       <h2 class="section-title">COMMANDES</h2>
       <div class="button-group"><a id="orderOnlineLink" href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a><button id="orderByMailBtn">Commander par mail</button></div>
@@ -110,12 +109,12 @@
       </div>
     </div>
 
-    <div id="download-view" class="view" style="width:100%;">
-        <h2 class="download-page-title">Téléchargez l'application pour l'ajouter à votre écran d'accueil, plus besoin de scanner notre QR code la prochaine fois !</h2>
+    <div id="download-view" class="view" style="width: 100%; display: none;">
+        <h2 class="download-page-title">Téléchargez l'application pour l'ajouter à votre écran d'accueil!</h2>
         <div class="download-choice">
             <h3>Android</h3>
             <p>Obtenez la version officielle et sécurisée de l'application sur le Google Play Store.</p>
-            <button id="downloadAndroidBtn">TELECHARGER SUR GOOGLE PLAY</button>
+            <button id="downloadAndroidBtn">TELECHARGER SUR PLAYSTORE</button>
         </div>
         <div class="download-choice">
             <h3>iOS (iPhone)</h3>
@@ -128,7 +127,7 @@
         <button id="backToMainFromDownloadBtn" style="margin-top: 20px;">RETOUR</button>
     </div>
 
-    <div id="scanner-view" class="view" style="width:100%;">
+    <div id="scanner-view" class="view" style="width: 100%; display: none;">
       <video id="video" playsinline="" autoplay="" muted=""></video>
       <div id="scanInstruction" style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;">Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.</div>
       <button id="cancelScanBtn" style="margin-top: 15px;">ANNULER</button>
@@ -137,9 +136,9 @@
   
   <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu">À PARTIR DU 04/08/25<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"><span>TELEPHONE :</span><br>02 461 30 05<button onclick="window.location.href='tel:+3224613005'" style="margin-top:10px;">APPELER</button></div><div id="contact-mail"><span>MAIL :</span><br>FACOPYBXL@PROXIMUS.BE<button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'" style="margin-top:10px;">POSER UNE QUESTION</button></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
-  <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address">FACOPYBXL@PROXIMUS.BE</div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
+  <div id="orderMailOverlay" class="overlay" style="display: none;"><div class="overlay-content"><div id="order-mail-address">FACOPYBXL@PROXIMUS.BE</div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   
-  <div id="printerSelectOverlay" class="overlay">
+  <div id="printerSelectOverlay" class="overlay" style="display: none;">
     <div class="overlay-content">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
         <div class="printer-grid" id="printer-grid-container"><button class="printer-choice-btn" data-link-id="pc1">PC 1</button><button class="printer-choice-btn" data-link-id="pc2">PC 2</button><button class="printer-choice-btn" data-link-id="pc3">PC 3</button><button class="printer-choice-btn" data-link-id="pc4">PC 4</button><button class="printer-choice-btn" data-link-id="pc5">PC 5</button><button class="printer-choice-btn" data-link-id="pc6">PC 6</button><button class="printer-choice-btn" data-link-id="pc7">PC 7</button><button class="printer-choice-btn" data-link-id="pc9">PC 9</button><button class="printer-choice-btn" data-link-id="pc10">PC 10</button><button class="printer-choice-btn" data-link-id="pcA">PC A</button><button class="printer-choice-btn" data-link-id="pcB">PC B</button><button class="printer-choice-btn" data-link-id="pcC">PC C</button></div><div style="width: 100%; margin-top: 20px;"><button class="printer-choice-btn" data-link-id="pcCaisse">PC CAISSE</button><button class="close-overlay-btn" style="margin-top: 10px;">RETOUR</button></div>
@@ -147,25 +146,30 @@
     </div>
   </div>
 
-  <div id="copyEmailOverlay" class="overlay">
+  <div id="copyEmailOverlay" class="overlay" style="display: none;">
     <div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;">
-      <h3 id="copy-confirm-title" style="font-size: 1.3rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;"></h3>
-      <div id="copied-email-box"></div>
-      <ol id="copy-instructions"></ol>
+      <h3 id="copy-confirm-title" style="font-size: 1.3rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;">Adresse e-mail copiée !</h3>
+      <div id="copied-email-box">UNIFCOPY@OUTLOOK.COM</div>
+      <ol id="copy-instructions">
+        <li>Ouvrez votre application d'e-mails.</li>
+        <li>Collez notre adresse comme destinataire.</li>
+        <li>Envoyez votre e-mail à transférer.</li>
+        <li>Sur le PC, double-cliquez sur l'icône "Boîte de réception" et attendez votre e-mail.</li>
+      </ol>
       <button class="close-overlay-btn" style="margin-top: 20px;">J'AI COMPRIS</button>
     </div>
   </div>
 
   <div id="scanResultOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;"><h3 style="font-size: 1.5rem; margin-top:0;">Lien Détecté</h3><p id="scan-result-link" style="font-size: 1rem; color: #ffb347; word-break: break-all; margin: 20px 0;"></p><div class="button-group"><button id="followScanLinkBtn">SUIVRE LE LIEN</button><button id="rescanBtn">RECOMMENCER</button></div></div></div>
   
-  <div id="shareOverlay" class="overlay">
+  <div id="shareOverlay" class="overlay" style="display: none;">
     <div class="overlay-content">
-      <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Partager l'application avec vos amis</h3>
-      <p style="color: #ffb347;">Partager par QR Code</p>
+      <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Partagez l'application avec vos amis</h3>
+      <p style="color: #ffb347;">Presentez le QR Code</p>
       <img id="share-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=https://VOTRE_URL_ICI" alt="QR Code de Partage">
       <div class="share-popup-separator">OU</div>
       <div class="button-group" style="margin-top: 10px;">
-        <button id="nativeShareBtn">Envoyer le lien</button>
+        <button id="nativeShareBtn">Envoyez le lien de l'app</button>
         <button class="close-overlay-btn">RETOUR</button>
       </div>
     </div>
