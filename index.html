@@ -69,20 +69,25 @@
   #copy-instructions li {
     margin-bottom: 10px;
   }
-  /* --- MODIFICATION CSS --- */
+  /* --- DÉBUT DE LA SECTION CORRIGÉE --- */
+  #copyEmailOverlay {
+    justify-content: center; /* Centre le contenu verticalement dans l'écran */
+  }
+  
   #copied-email-address {
-    color: #fff;
+    color: #00ff00;       /* L'adresse e-mail est maintenant en vert */
     font-weight: bold;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    word-break: break-all; /* Permet au texte de se couper pour éviter tout débordement */
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    white-space: nowrap; /* Empêche le texte de se couper */
+    text-align: center;
   }
   #copy-confirm-text {
-    color: #00ff00; /* Texte de confirmation en vert */
+    color: #ffb347;      /* Texte de confirmation harmonisé avec le reste du site */
     font-size: 1.1rem;
     font-weight: bold;
   }
-  /* --- FIN MODIFICATION CSS --- */
+  /* --- FIN DE LA SECTION CORRIGÉE --- */
 </style>
 </head>
 <body>
@@ -143,8 +148,7 @@
     <div class="overlay-content">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
         <div class="printer-grid" id="printer-grid-container"></div>
-        <!-- Les boutons du bas seront ajoutés ici par le script -->
-    </div>
+        </div>
   </div>
 
   <div id="copyEmailOverlay" class="overlay">
