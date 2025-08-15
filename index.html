@@ -13,7 +13,7 @@
   main { width: 100%; max-width: 700px; padding: 30px 25px; text-align: center; }
   button, .link-button { position: relative; background: transparent; border: 3px solid #ff6f00; color: #ff6f00; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.2rem; padding: 14px 25px; border-radius: 10px; cursor: pointer; overflow: hidden; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1.5px; user-select: none; box-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347; margin: 10px 0; display: inline-block; text-decoration: none; width: 100%; }
   button:hover, .link-button:hover { color: #ffb347; border-color: #ffb347; box-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347; }
-  .section-title { font-size: 1.8rem; margin-top: 20px; margin-bottom: 20px; border-bottom: 2px solid #ff6f00; padding-bottom: 10px; text-align: center; }
+  .section-title { font-size: 1.8rem; margin-top: 20px; margin-bottom: 20px; border-bottom: 2px solid #ff6f00; padding-bottom: 10px; text-align: center; line-height: 1.2; } /* MODIFIÉ : Ajout de line-height */
   .bloc { background: rgba(47, 47, 47, 0.3); border: 1px solid #ff6f00; border-radius: 15px; padding: 20px; margin-bottom: 25px; }
   .bloc-description { font-size: 0.9rem; color: #ffb347; margin-bottom: 15px; line-height: 1.4; }
   .button-group { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
@@ -29,8 +29,7 @@
   .download-choice p { font-size: 0.9rem; line-height: 1.4; color: #fff; }
   .share-popup-separator { font-size: 1.5rem; margin: 20px 0; font-weight: 900; color: #ffb347; }
   #share-qr-code { max-width: 200px; width: 100%; border: 2px solid #ffb347; border-radius: 10px; margin-top: 15px; }
-  .view { display: none; } /* MODIFIÉ : Classe pour gérer les vues */
-
+  .view { display: none; }
 </style>
 </head>
 <body>
@@ -38,7 +37,9 @@
 
   <main>
     <div id="main-dashboard" class="view" style="display: block;">
-      <h2 class="section-title" style="white-space: nowrap;">IMPRESSION SELF-SERVICE</h2>
+      
+      <h2 class="section-title">IMPRESSIONS<br>SELF-SERVICE</h2>
+      
       <div class="bloc"><h3>Dépôt Rapide (Recommandé)</h3><p class="bloc-description">Pour tous vos fichiers (PDF, photos...). Idéal pour envoyer plusieurs fichiers à la fois.</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
       <div class="bloc"><h3>Envoi par E-mail</h3><p class="bloc-description">Choisissez la situation qui vous correspond.</p><div class="button-group"><button id="haveFileOnPhoneBtn">J'ai un fichier sur mon téléphone</button><button id="transferEmailBtn">Je veux transférer un e-mail</button></div></div>
       <div class="bloc"><h3>Transfert par QR Code</h3><p class="bloc-description">Pour une connexion directe et rapide entre votre téléphone et le PC.</p><button id="scanQRCodeBtn">Scanner le QR Code du PC</button></div>
@@ -140,7 +141,7 @@
         printerGrid.appendChild(button);
     }
 
-    // --- GESTION DES VUES PRINCIPALES (MENU, SCANNER, TÉLÉCHARGER) --- // MODIFIÉ
+    // --- GESTION DES VUES PRINCIPALES (MENU, SCANNER, TÉLÉCHARGER) ---
     const views = document.querySelectorAll('.view');
     function showView(viewId) {
         views.forEach(view => {
@@ -196,7 +197,7 @@
         showView('main-dashboard');
     });
 
-    // --- LOGIQUE DU SCANNER QR CODE --- // MODIFIÉ : Améliorée pour plus de stabilité
+    // --- LOGIQUE DU SCANNER QR CODE ---
     let stream, scanning = false;
     const video = document.getElementById('video');
     const scanResultOverlay = document.getElementById('scanResultOverlay');
@@ -206,7 +207,7 @@
     
     async function startCamera() {
       try {
-        if (stream) { // S'assure que la caméra est bien arrêtée avant de la relancer
+        if (stream) { 
             stream.getTracks().forEach(track => track.stop());
         }
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -267,4 +268,3 @@
 </script>
 </body>
 </html>
-
