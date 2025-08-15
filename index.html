@@ -13,13 +13,34 @@
   main { width: 100%; max-width: 700px; padding: 30px 25px; text-align: center; }
   button, .link-button { position: relative; background: transparent; border: 3px solid #ff6f00; color: #ff6f00; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.2rem; padding: 14px 25px; border-radius: 10px; cursor: pointer; overflow: hidden; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1.5px; user-select: none; box-shadow: 0 0 5px #ff6f00, 0 0 15px #ffb347; margin: 10px 0; display: inline-block; text-decoration: none; width: 100%; }
   button:hover, .link-button:hover { color: #ffb347; border-color: #ffb347; box-shadow: 0 0 10px #ffb347, 0 0 20px #ffb347, 0 0 40px #ffb347; }
-  .section-title { font-size: 1.8rem; margin-top: 20px; margin-bottom: 20px; border-bottom: 2px solid #ff6f00; padding-bottom: 10px; text-align: center; line-height: 1.2; } /* MODIFIÉ : Ajout de line-height */
+  .section-title { font-size: 1.8rem; margin-top: 20px; margin-bottom: 20px; border-bottom: 2px solid #ff6f00; padding-bottom: 10px; text-align: center; line-height: 1.2; }
   .bloc { background: rgba(47, 47, 47, 0.3); border: 1px solid #ff6f00; border-radius: 15px; padding: 20px; margin-bottom: 25px; }
   .bloc-description { font-size: 0.9rem; color: #ffb347; margin-bottom: 15px; line-height: 1.4; }
   .button-group { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
   .button-group button, .button-group .link-button { flex: 1 1 200px; min-width: 200px; }
   video { width: 100%; max-width: 600px; border-radius: 15px; box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00; position: relative; background: #121212; }
-  .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(18, 18, 18, 0.95); color: #ff6f00; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; z-index: 9999; }
+  
+  /* --- MODIFICATION CSS --- */
+  /* Correction de l'overlay pour éviter que le contenu soit coupé en haut */
+  .overlay { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    background: rgba(18, 18, 18, 0.95); 
+    color: #ff6f00; 
+    display: none; 
+    flex-direction: column; 
+    justify-content: flex-start; /* Changé de 'center' à 'flex-start' */
+    align-items: center; 
+    padding: 40px 25px; /* Augmentation du padding vertical */
+    text-align: center; 
+    z-index: 9999; 
+    overflow-y: auto; /* Ajout du défilement si le contenu est trop grand */
+  }
+  /* --- FIN MODIFICATION CSS --- */
+
   .overlay-content { max-width: 500px; width: 90%; }
   .printer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; width: 100%; margin-bottom: 20px; }
 
@@ -86,7 +107,16 @@
   <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
   <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"></div><div id="contact-mail"></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
   <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
-  <div id="printerSelectOverlay" class="overlay"><div class="overlay-content"><h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3><div class="printer-grid" id="printer-grid-container"></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div></div>
+  
+  <!-- Structure HTML de l'overlay modifiée pour enlever le bouton RETOUR initial -->
+  <div id="printerSelectOverlay" class="overlay">
+    <div class="overlay-content">
+        <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
+        <div class="printer-grid" id="printer-grid-container"></div>
+        <!-- Le bouton RETOUR sera ajouté dynamiquement par le script -->
+    </div>
+  </div>
+
   <div id="copyEmailOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;"><p style="font-size: 1.2rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;" id="copy-confirm-text"></p><p style="font-size: 1rem; line-height: 1.5;">Vous pouvez maintenant aller dans votre application e-mail pour transférer votre message.</p><button class="close-overlay-btn">J'AI COMPRIS</button></div></div>
   <div id="scanResultOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;"><h3 style="font-size: 1.5rem; margin-top:0;">Lien Détecté</h3><p id="scan-result-link" style="font-size: 1rem; color: #ffb347; word-break: break-all; margin: 20px 0;"></p><div class="button-group"><button id="followScanLinkBtn">SUIVRE LE LIEN</button><button id="rescanBtn">RECOMMENCER</button></div></div></div>
   <div id="shareOverlay" class="overlay"><div class="overlay-content"><h3 style="font-size: 1.5rem; margin-bottom: 20px;">Partager l'application</h3><p style="color: #ffb347;">Partager par QR Code</p><img id="share-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://VOTRE_URL_ICI" alt="QR Code de Partage"><div class="share-popup-separator">OU</div><button id="nativeShareBtn">📲 Envoyez le lien</button></div><button class="close-overlay-btn" style="margin-top:20px;">FERMER</button></div>
@@ -119,16 +149,21 @@
     document.getElementById('contact-mail').innerHTML = `<span>MAIL :</span><br>${config.emailCommande}<button onclick="window.location.href='mailto:${config.emailCommande}'" style="margin-top:10px;">POSER UNE QUESTION</button>`;
     document.getElementById('scanInstruction').innerHTML = `Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.`;
 
+    // --- MODIFICATION SCRIPT ---
+    // Logique de création des boutons de sélection de PC modifiée
     const printerGrid = document.getElementById('printer-grid-container');
+    const overlayContent = printerGrid.parentElement;
+
+    // Création d'un conteneur pour le bouton "PC CAISSE" et son bouton "RETOUR"
+    const caisseContainer = document.createElement('div');
+    caisseContainer.style.width = '100%';
+    caisseContainer.style.marginTop = '20px';
+
     for (const pcId in config.liensDropbox) {
         const button = document.createElement('button');
         button.className = 'printer-choice-btn';
         button.dataset.linkId = pcId;
-        if (pcId === 'pcCaisse') {
-            button.textContent = 'PC CAISSE';
-        } else {
-            button.textContent = `PC ${pcId.replace('pc', '').toUpperCase()}`;
-        }
+        
         button.addEventListener('click', () => {
             const dropboxUrl = config.liensDropbox[pcId];
             if (dropboxUrl && dropboxUrl.startsWith('https')) {
@@ -138,8 +173,30 @@
                 alert('Lien de dépôt non configuré pour ce PC.');
             }
         });
-        printerGrid.appendChild(button);
+
+        if (pcId === 'pcCaisse') {
+            button.textContent = 'PC CAISSE';
+            caisseContainer.appendChild(button); // Ajout au conteneur spécial
+        } else {
+            button.textContent = `PC ${pcId.replace('pc', '').toUpperCase()}`;
+            printerGrid.appendChild(button); // Ajout à la grille normale
+        }
     }
+
+    // Ajout du conteneur spécial après la grille
+    printerGrid.after(caisseContainer);
+
+    // Création et ajout du nouveau bouton RETOUR sous le bouton PC CAISSE
+    const newBackButton = document.createElement('button');
+    newBackButton.textContent = 'RETOUR';
+    newBackButton.className = 'close-overlay-btn'; // Utilise la même classe pour le style et la logique
+    newBackButton.style.marginTop = '10px';
+    // Ajout manuel de l'événement de fermeture car le bouton est créé dynamiquement
+    newBackButton.addEventListener('click', () => {
+        toggleOverlay(document.getElementById('printerSelectOverlay'), false);
+    });
+    caisseContainer.appendChild(newBackButton);
+    // --- FIN MODIFICATION SCRIPT ---
 
     // --- GESTION DES VUES PRINCIPALES (MENU, SCANNER, TÉLÉCHARGER) ---
     const views = document.querySelectorAll('.view');
@@ -208,7 +265,7 @@
     async function startCamera() {
       try {
         if (stream) { 
-            stream.getTracks().forEach(track => track.stop());
+          stream.getTracks().forEach(track => track.stop());
         }
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
