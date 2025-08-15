@@ -90,7 +90,7 @@
       
       <h2 class="section-title">IMPRESSION<br>SELF-SERVICE</h2>
       
-      <div class="bloc"><h3>Dépôt Rapide (Recommandé)</h3><p class="bloc-description">Le plus simple et le plus rapide</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
+      <div class="bloc"><h3></h3><p class="bloc-description">Le plus simple et le plus rapide</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
       
       <div class="bloc"><button id="goToEmailChoiceBtn">ENVOYER PAR MAIL</button></div>
       
@@ -125,7 +125,7 @@
         <h2 class="download-page-title">Téléchargez l'application pour l'ajouter à votre écran d'accueil!</h2>
         <div class="download-choice">
             <h3>Android</h3>
-            <p>Obtenez la version officielle et sécurisée de l'application sur le Google Play Store.</p>
+            <p></p>
             <button id="downloadAndroidBtn">TELECHARGER SUR PLAYSTORE</button>
         </div>
         <div class="download-choice">
@@ -147,13 +147,13 @@
   </main>
   
   <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu">À PARTIR DU 04/08/25<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
-  <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"><span>TELEPHONE :</span><br>02 461 30 05<button onclick="window.location.href='tel:+3224613005'" style="margin-top:10px;">APPELER</button></div><div id="contact-mail"><span>MAIL :</span><br>FACOPYBXL@PROXIMUS.BE<button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'" style="margin-top:10px;">POSER UNE QUESTION</button></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
+  <div id="contactsOverlay" class="overlay" style="display: none;"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"><span>TELEPHONE :</span><br>02 461 30 05<button onclick="window.location.href='tel:+3224613005'" style="margin-top:10px;">APPELER</button></div><div id="contact-mail"><span>MAIL :</span><br>FACOPYBXL@PROXIMUS.BE<button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'" style="margin-top:10px;">POSER UNE QUESTION</button></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
   <div id="orderMailOverlay" class="overlay" style="display: none;"><div class="overlay-content"><div id="order-mail-address">FACOPYBXL@PROXIMUS.BE</div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   
   <div id="printerSelectOverlay" class="overlay" style="display: none;">
     <div class="overlay-content">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
-        <div class="printer-grid" id="printer-grid-container"></div>
+        <div class="printer-grid" id="printer-grid-container"><button class="printer-choice-btn" data-link-id="pc1">PC 1</button><button class="printer-choice-btn" data-link-id="pc2">PC 2</button><button class="printer-choice-btn" data-link-id="pc3">PC 3</button><button class="printer-choice-btn" data-link-id="pc4">PC 4</button><button class="printer-choice-btn" data-link-id="pc5">PC 5</button><button class="printer-choice-btn" data-link-id="pc6">PC 6</button><button class="printer-choice-btn" data-link-id="pc7">PC 7</button><button class="printer-choice-btn" data-link-id="pc9">PC 9</button><button class="printer-choice-btn" data-link-id="pc10">PC 10</button><button class="printer-choice-btn" data-link-id="pcA">PC A</button><button class="printer-choice-btn" data-link-id="pcB">PC B</button><button class="printer-choice-btn" data-link-id="pcC">PC C</button></div><div style="width: 100%; margin-top: 20px;"><button class="printer-choice-btn" data-link-id="pcCaisse">PC CAISSE</button><button class="close-overlay-btn" style="margin-top: 10px;">RETOUR</button></div>
         </div>
   </div>
 
@@ -400,6 +400,7 @@
     });
   });
 </script>
+
 
 
 </body></html>
