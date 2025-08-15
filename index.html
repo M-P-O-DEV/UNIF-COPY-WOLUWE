@@ -48,6 +48,17 @@
   .share-popup-separator { font-size: 1.5rem; margin: 20px 0; font-weight: 900; color: #ffb347; }
   #share-qr-code { max-width: 200px; width: 100%; border: 2px solid #ffb347; border-radius: 10px; margin-top: 15px; }
   .view { display: none; }
+
+  /* --- MODIFICATION CSS --- */
+  #horaires-contenu {
+    font-size: 1.3rem;
+    line-height: 1.7;
+  }
+  #contact-phone, #contact-mail {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  /* --- FIN MODIFICATION CSS --- */
 </style>
 </head>
 <body>
@@ -75,24 +86,25 @@
       </div>
     </div>
 
+    <!-- --- MODIFICATION HTML --- -->
     <div id="download-view" class="view" style="width:100%;">
         <h2 class="download-page-title">Téléchargez l'application pour l'ajouter à votre écran d'accueil, plus besoin de scanner notre QR code la prochaine fois !</h2>
         <div class="download-choice">
             <h3>Android</h3>
             <p>Obtenez la version officielle et sécurisée de l'application sur le Google Play Store.</p>
-            <button id="downloadAndroidBtn">Disponible sur Google Play</button>
+            <button id="downloadAndroidBtn">TELECHARGER SUR GOOGLE PLAY</button>
         </div>
         <div class="download-choice">
             <h3>iOS (iPhone)</h3>
             <p>Suivez ces étapes simples pour ajouter l'application à votre écran d'accueil :</p>
             <ol style="text-align: left; color: #ffb347; font-size: 0.9rem; line-height: 1.6;">
-                <li>Ouvrez ce site dans <strong>Safari</strong>.</li>
                 <li>Appuyez sur l'icône de <strong>Partage</strong> 📤 en bas de l'écran.</li>
                 <li>Faites défiler et choisissez <strong>"Sur l'écran d'accueil"</strong>.</li>
             </ol>
         </div>
         <button id="backToMainFromDownloadBtn" style="margin-top: 20px;">RETOUR</button>
     </div>
+    <!-- --- FIN MODIFICATION HTML --- -->
 
     <div id="scanner-view" class="view" style="width:100%;">
       <video id="video" playsinline autoplay muted></video>
@@ -155,11 +167,9 @@
     document.getElementById('contact-mail').innerHTML = `<span>MAIL :</span><br>${config.emailCommande}<button onclick="window.location.href='mailto:${config.emailCommande}'" style="margin-top:10px;">POSER UNE QUESTION</button>`;
     document.getElementById('scanInstruction').innerHTML = `Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.`;
 
-    // --- MODIFICATION SCRIPT (RETOUR À LA VERSION PRÉCÉDENTE) ---
     const printerGrid = document.getElementById('printer-grid-container');
     const overlayContent = printerGrid.parentElement;
 
-    // Création d'un conteneur pour les boutons du bas
     const caisseContainer = document.createElement('div');
     caisseContainer.style.width = '100%';
     caisseContainer.style.marginTop = '20px';
@@ -181,17 +191,15 @@
 
         if (pcId === 'pcCaisse') {
             button.textContent = 'PC CAISSE';
-            caisseContainer.appendChild(button); // Ajout au conteneur du bas
+            caisseContainer.appendChild(button);
         } else {
             button.textContent = `PC ${pcId.replace('pc', '').toUpperCase()}`;
-            printerGrid.appendChild(button); // Ajout à la grille normale
+            printerGrid.appendChild(button);
         }
     }
 
-    // Ajout du conteneur après la grille
     printerGrid.after(caisseContainer);
 
-    // Création et ajout du bouton RETOUR sous le bouton PC CAISSE
     const newBackButton = document.createElement('button');
     newBackButton.textContent = 'RETOUR';
     newBackButton.className = 'close-overlay-btn';
@@ -200,7 +208,6 @@
         toggleOverlay(document.getElementById('printerSelectOverlay'), false);
     });
     caisseContainer.appendChild(newBackButton);
-    // --- FIN MODIFICATION SCRIPT ---
 
     // --- GESTION DES VUES PRINCIPALES (MENU, SCANNER, TÉLÉCHARGER) ---
     const views = document.querySelectorAll('.view');
