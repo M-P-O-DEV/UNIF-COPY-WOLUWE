@@ -67,21 +67,19 @@
   #copy-instructions li {
     margin-bottom: 10px;
   }
-  /* --- MODIFICATION CSS --- */
   #copied-email-box {
     color: #ffb347;
     font-weight: bold;
-    font-size: 1rem; /* Taille de police légèrement réduite */
+    font-size: 1rem;
     margin: 15px 0;
     padding: 10px;
     border: 1px solid #ffb347;
     border-radius: 8px;
-    white-space: nowrap; /* Empêche le retour à la ligne */
-    overflow: hidden; /* Cache tout ce qui pourrait déborder */
-    text-overflow: ellipsis; /* Ajoute "..." si le texte est encore trop long */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: center;
   }
-  /* --- FIN MODIFICATION CSS --- */
 </style>
 </head>
 <body class="">
@@ -93,7 +91,9 @@
       <h2 class="section-title">IMPRESSION<br>SELF-SERVICE</h2>
       
       <div class="bloc"><h3>Dépôt Rapide (Recommandé)</h3><p class="bloc-description">Le plus simple et le plus rapide</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
-      <div class="bloc"><h3>Envoi par E-mail</h3><p class="bloc-description">Choisissez la situation qui vous correspond.</p><div class="button-group"><button id="haveFileOnPhoneBtn">J'ai un fichier sur mon téléphone</button><button id="transferEmailBtn">Je veux transférer un e-mail</button></div></div>
+      
+      <div class="bloc"><button id="goToEmailChoiceBtn">ENVOYER PAR MAIL</button></div>
+      
       <div class="bloc"><p class="bloc-description"></p><button id="scanQRCodeBtn">ENVOYER PAR QR CODE</button></div>
       
       <h2 class="section-title">COMMANDES</h2>
@@ -107,6 +107,18 @@
         <button id="downloadAppBtn">Télécharger l'application</button>
         <button id="shareAppBtn">Partager l'application</button>
       </div>
+    </div>
+
+    <div id="email-choice-view" class="view" style="display: none;">
+      <h2 class="section-title">ENVOYER PAR MAIL</h2>
+      <div class="bloc">
+        <p class="bloc-description">Choisissez la situation qui vous correspond.</p>
+        <div class="button-group">
+          <button id="haveFileOnPhoneBtn">J'ai un fichier sur mon téléphone</button>
+          <button id="transferEmailBtn">Je veux transférer un e-mail</button>
+        </div>
+      </div>
+      <button id="backToMainFromEmailBtn" style="margin-top: 20px;">RETOUR</button>
     </div>
 
     <div id="download-view" class="view" style="width: 100%; display: none;">
@@ -141,9 +153,8 @@
   <div id="printerSelectOverlay" class="overlay" style="display: none;">
     <div class="overlay-content">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
-        <div class="printer-grid" id="printer-grid-container"><button class="printer-choice-btn" data-link-id="pc1">PC 1</button><button class="printer-choice-btn" data-link-id="pc2">PC 2</button><button class="printer-choice-btn" data-link-id="pc3">PC 3</button><button class="printer-choice-btn" data-link-id="pc4">PC 4</button><button class="printer-choice-btn" data-link-id="pc5">PC 5</button><button class="printer-choice-btn" data-link-id="pc6">PC 6</button><button class="printer-choice-btn" data-link-id="pc7">PC 7</button><button class="printer-choice-btn" data-link-id="pc9">PC 9</button><button class="printer-choice-btn" data-link-id="pc10">PC 10</button><button class="printer-choice-btn" data-link-id="pcA">PC A</button><button class="printer-choice-btn" data-link-id="pcB">PC B</button><button class="printer-choice-btn" data-link-id="pcC">PC C</button></div><div style="width: 100%; margin-top: 20px;"><button class="printer-choice-btn" data-link-id="pcCaisse">PC CAISSE</button><button class="close-overlay-btn" style="margin-top: 10px;">RETOUR</button></div>
-        <!-- Les boutons du bas seront ajoutés ici par le script -->
-    </div>
+        <div class="printer-grid" id="printer-grid-container"></div>
+        </div>
   </div>
 
   <div id="copyEmailOverlay" class="overlay" style="display: none;">
@@ -205,6 +216,9 @@
 
     const printerGrid = document.getElementById('printer-grid-container');
     const overlayContent = printerGrid.parentElement;
+    
+    // Vider le conteneur HTML avant de le remplir avec JS pour éviter les doublons
+    printerGrid.innerHTML = ''; 
 
     const caisseContainer = document.createElement('div');
     caisseContainer.style.width = '100%';
@@ -217,7 +231,7 @@
         
         button.addEventListener('click', () => {
             const dropboxUrl = config.liensDropbox[pcId];
-            if (dropboxUrl && dropboxUrl.startsWith('https')) {
+            if (dropboxUrl && dropboxUrl.startsWith('http')) {
                 window.open(dropboxUrl, '_blank');
                 toggleOverlay(document.getElementById('printerSelectOverlay'), false);
             } else {
@@ -245,7 +259,7 @@
     });
     caisseContainer.appendChild(newBackButton);
 
-    // --- GESTION DES VUES PRINCIPALES (MENU, SCANNER, TÉLÉCHARGER) ---
+    // --- GESTION DES VUES PRINCIPALES ---
     const views = document.querySelectorAll('.view');
     function showView(viewId) {
         views.forEach(view => {
@@ -284,7 +298,6 @@
     document.getElementById('haveFileOnPhoneBtn').addEventListener('click', () => window.location.href = `mailto:${config.emailSelfService}`);
 
     document.getElementById('transferEmailBtn').addEventListener('click', () => {
-      // Mise à jour du contenu de la fenêtre de confirmation
       document.getElementById('copy-confirm-title').textContent = 'Adresse e-mail copiée !';
       document.getElementById('copied-email-box').textContent = config.emailSelfService;
       const instructionsList = document.getElementById('copy-instructions');
@@ -294,8 +307,6 @@
         <li>Envoyez votre e-mail à transférer.</li>
         <li>Sur le PC, double-cliquez sur l'icône "Boîte de réception" et attendez votre e-mail.</li>
       `;
-
-      // Copie dans le presse-papiers et affichage de la fenêtre
       navigator.clipboard.writeText(config.emailSelfService)
         .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
         .catch(() => alert("Erreur lors de la copie de l'adresse e-mail."));
@@ -312,6 +323,13 @@
         stopCamera();
         showView('main-dashboard');
     });
+
+    // --- MODIFICATIONS JS ---
+    // Gère le clic sur le nouveau bouton "ENVOYER PAR MAIL" pour afficher la vue des choix
+    document.getElementById('goToEmailChoiceBtn').addEventListener('click', () => showView('email-choice-view'));
+    // Gère le clic sur le bouton "RETOUR" de la nouvelle vue
+    document.getElementById('backToMainFromEmailBtn').addEventListener('click', () => showView('main-dashboard'));
+    // --- FIN DES MODIFICATIONS JS ---
 
     // --- LOGIQUE DU SCANNER QR CODE ---
     let stream, scanning = false;
