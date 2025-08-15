@@ -19,21 +19,11 @@
   video { width: 100%; max-width: 600px; border-radius: 15px; box-shadow: 0 0 20px #ff6f00, 0 0 40px #ffb347, inset 0 0 20px #ff6f00; position: relative; background: #121212; }
   
   .overlay { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    right: 0; 
-    bottom: 0; 
-    background: rgba(18, 18, 18, 0.95); 
-    color: #ff6f00; 
-    display: none; 
-    flex-direction: column; 
-    justify-content: flex-start;
-    align-items: center; 
-    padding: 40px 25px;
-    text-align: center; 
-    z-index: 9999; 
-    overflow-y: auto;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(18, 18, 18, 0.95); color: #ff6f00; 
+    display: none; flex-direction: column; justify-content: flex-start;
+    align-items: center; padding: 40px 25px; text-align: center; 
+    z-index: 9999; overflow-y: auto;
   }
 
   .overlay-content { max-width: 500px; width: 90%; }
@@ -47,42 +37,14 @@
   #share-qr-code { max-width: 200px; width: 100%; border: 2px solid #ffb347; border-radius: 10px; margin-top: 15px; }
   .view { display: none; }
 
-  #horaires-contenu {
-    font-size: 1.3rem;
-    line-height: 1.7;
-  }
-  #contact-phone, #contact-mail {
-    font-size: 1.1rem;
-    line-height: 1.6;
-  }
-  #copy-instructions {
-    text-align: left;
-    color: #fff;
-    font-size: 1rem;
-    line-height: 1.6;
-    list-style-position: inside;
-    padding-left: 0;
-    margin-top: 15px;
-  }
-  #copy-instructions li {
-    margin-bottom: 10px;
-  }
-  #copied-email-box {
-    color: #ffb347;
-    font-weight: bold;
-    font-size: 1rem;
-    margin: 15px 0;
-    padding: 10px;
-    border: 1px solid #ffb347;
-    border-radius: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-  }
+  #horaires-contenu { font-size: 1.3rem; line-height: 1.7; }
+  #contact-phone, #contact-mail { font-size: 1.1rem; line-height: 1.6; }
+  #copy-instructions { text-align: left; color: #fff; font-size: 1rem; line-height: 1.6; list-style-position: inside; padding-left: 0; margin-top: 15px; }
+  #copy-instructions li { margin-bottom: 10px; }
+  #copied-email-box { color: #ffb347; font-weight: bold; font-size: 1rem; margin: 15px 0; padding: 10px; border: 1px solid #ffb347; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
 </style>
 </head>
-<body class="">
+<body>
   <header data-text="UNIF-COPY WOLUWE">UNIF-COPY WOLUWE</header>
 
   <main>
@@ -90,17 +52,31 @@
       
       <h2 class="section-title">IMPRESSION<br>SELF-SERVICE</h2>
       
-      <div class="bloc"><h3></h3><p class="bloc-description">Le plus simple et le plus rapide</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
+      <!-- MODIFICATION: La description est maintenant au-dessus du bouton -->
+      <div class="bloc">
+        <p class="bloc-description">Le plus simple et le plus rapide</p>
+        <button id="depositFileBtn">Déposer mes fichiers</button>
+      </div>
       
-      <div class="bloc"><button id="goToEmailChoiceBtn">ENVOYER PAR MAIL</button></div>
+      <div class="bloc">
+        <button id="goToEmailChoiceBtn">ENVOYER PAR MAIL</button>
+      </div>
       
-      <div class="bloc"><p class="bloc-description"></p><button id="scanQRCodeBtn">ENVOYER PAR QR CODE</button></div>
+      <div class="bloc">
+        <button id="scanQRCodeBtn">ENVOYER PAR QR CODE</button>
+      </div>
       
       <h2 class="section-title">COMMANDES</h2>
-      <div class="button-group"><a id="orderOnlineLink" href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a><button id="orderByMailBtn">Commander par mail</button></div>
+      <div class="button-group">
+        <a id="orderOnlineLink" href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a>
+        <button id="orderByMailBtn">Commander par mail</button>
+      </div>
       
       <h2 class="section-title">INFORMATIONS</h2>
-      <div class="button-group"><button id="hoursBtn">Heures d'ouverture</button><button id="contactsBtn">Contacts</button></div>
+      <div class="button-group">
+        <button id="hoursBtn">Heures d'ouverture</button>
+        <button id="contactsBtn">Contacts</button>
+      </div>
 
       <h2 class="section-title">APPLICATION</h2>
       <div class="button-group">
@@ -125,7 +101,6 @@
         <h2 class="download-page-title">Téléchargez l'application pour l'ajouter à votre écran d'accueil!</h2>
         <div class="download-choice">
             <h3>Android</h3>
-            <p></p>
             <button id="downloadAndroidBtn">TELECHARGER SUR PLAYSTORE</button>
         </div>
         <div class="download-choice">
@@ -140,44 +115,41 @@
     </div>
 
     <div id="scanner-view" class="view" style="width: 100%; display: none;">
-      <video id="video" playsinline="" autoplay="" muted=""></video>
+      <video id="video" playsinline autoplay muted></video>
       <div id="scanInstruction" style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;">Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.</div>
       <button id="cancelScanBtn" style="margin-top: 15px;">ANNULER</button>
     </div>
   </main>
   
-  <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu">À PARTIR DU 04/08/25<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
-  <div id="contactsOverlay" class="overlay" style="display: none;"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"><span>TELEPHONE :</span><br>02 461 30 05<button onclick="window.location.href='tel:+3224613005'" style="margin-top:10px;">APPELER</button></div><div id="contact-mail"><span>MAIL :</span><br>FACOPYBXL@PROXIMUS.BE<button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'" style="margin-top:10px;">POSER UNE QUESTION</button></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
-  <div id="orderMailOverlay" class="overlay" style="display: none;"><div class="overlay-content"><div id="order-mail-address">FACOPYBXL@PROXIMUS.BE</div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
+  <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
+  <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"></div><div id="contact-mail"></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
+  <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   
-  <div id="printerSelectOverlay" class="overlay" style="display: none;">
+  <div id="printerSelectOverlay" class="overlay">
     <div class="overlay-content">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
-        <div class="printer-grid" id="printer-grid-container"><button class="printer-choice-btn" data-link-id="pc1">PC 1</button><button class="printer-choice-btn" data-link-id="pc2">PC 2</button><button class="printer-choice-btn" data-link-id="pc3">PC 3</button><button class="printer-choice-btn" data-link-id="pc4">PC 4</button><button class="printer-choice-btn" data-link-id="pc5">PC 5</button><button class="printer-choice-btn" data-link-id="pc6">PC 6</button><button class="printer-choice-btn" data-link-id="pc7">PC 7</button><button class="printer-choice-btn" data-link-id="pc9">PC 9</button><button class="printer-choice-btn" data-link-id="pc10">PC 10</button><button class="printer-choice-btn" data-link-id="pcA">PC A</button><button class="printer-choice-btn" data-link-id="pcB">PC B</button><button class="printer-choice-btn" data-link-id="pcC">PC C</button></div><div style="width: 100%; margin-top: 20px;"><button class="printer-choice-btn" data-link-id="pcCaisse">PC CAISSE</button><button class="close-overlay-btn" style="margin-top: 10px;">RETOUR</button></div>
+        <div class="printer-grid" id="printer-grid-container">
+            <!-- Les boutons des PC sont générés par le script JavaScript -->
         </div>
+    </div>
   </div>
 
-  <div id="copyEmailOverlay" class="overlay" style="display: none;">
+  <div id="copyEmailOverlay" class="overlay">
     <div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;">
-      <h3 id="copy-confirm-title" style="font-size: 1.3rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;">Adresse e-mail copiée !</h3>
-      <div id="copied-email-box">UNIFCOPY@OUTLOOK.COM</div>
-      <ol id="copy-instructions">
-        <li>Ouvrez votre application d'e-mails.</li>
-        <li>Collez notre adresse comme destinataire.</li>
-        <li>Envoyez votre e-mail à transférer.</li>
-        <li>Sur le PC, double-cliquez sur l'icône "Boîte de réception" et attendez votre e-mail.</li>
-      </ol>
+      <h3 id="copy-confirm-title" style="font-size: 1.3rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;"></h3>
+      <div id="copied-email-box"></div>
+      <ol id="copy-instructions"></ol>
       <button class="close-overlay-btn" style="margin-top: 20px;">J'AI COMPRIS</button>
     </div>
   </div>
 
   <div id="scanResultOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;"><h3 style="font-size: 1.5rem; margin-top:0;">Lien Détecté</h3><p id="scan-result-link" style="font-size: 1rem; color: #ffb347; word-break: break-all; margin: 20px 0;"></p><div class="button-group"><button id="followScanLinkBtn">SUIVRE LE LIEN</button><button id="rescanBtn">RECOMMENCER</button></div></div></div>
   
-  <div id="shareOverlay" class="overlay" style="display: none;">
+  <div id="shareOverlay" class="overlay">
     <div class="overlay-content">
       <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Partagez l'application avec vos amis</h3>
       <p style="color: #ffb347;">Presentez le QR Code</p>
-      <img id="share-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=https://VOTRE_URL_ICI" alt="QR Code de Partage">
+      <img id="share-qr-code" alt="QR Code de Partage">
       <div class="share-popup-separator">OU</div>
       <div class="button-group" style="margin-top: 10px;">
         <button id="nativeShareBtn">Envoyez le lien de l'app</button>
@@ -205,155 +177,135 @@
       }
     };
 
-    // --- INITIALISATION DE LA PAGE ---
-    document.getElementById('horaires-contenu').innerHTML = config.heuresOuverture;
-    document.getElementById('orderOnlineLink').href = config.lienCommandeEnLigne;
-    document.getElementById('order-mail-address').textContent = config.emailCommande;
-    document.getElementById('order-mail-action-btn').onclick = () => window.location.href = `mailto:${config.emailCommande}`;
-    document.getElementById('contact-phone').innerHTML = `<span>TELEPHONE :</span><br>${config.telephone.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4')}<button onclick="window.location.href='tel:+32${config.telephone.substring(1)}'" style="margin-top:10px;">APPELER</button>`;
-    document.getElementById('contact-mail').innerHTML = `<span>MAIL :</span><br>${config.emailCommande}<button onclick="window.location.href='mailto:${config.emailCommande}'" style="margin-top:10px;">POSER UNE QUESTION</button>`;
-    document.getElementById('scanInstruction').innerHTML = `Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.`;
+    // --- INITIALISATION DYNAMIQUE DE LA PAGE ---
+    function initDynamicContent() {
+        document.getElementById('horaires-contenu').innerHTML = config.heuresOuverture;
+        document.getElementById('orderOnlineLink').href = config.lienCommandeEnLigne;
+        document.getElementById('order-mail-address').textContent = config.emailCommande;
+        document.getElementById('order-mail-action-btn').onclick = () => window.location.href = `mailto:${config.emailCommande}`;
+        document.getElementById('contact-phone').innerHTML = `<span>TELEPHONE :</span><br>${config.telephone.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4')}<button onclick="window.location.href='tel:+32${config.telephone.substring(1)}'" style="margin-top:10px;">APPELER</button>`;
+        document.getElementById('contact-mail').innerHTML = `<span>MAIL :</span><br>${config.emailCommande}<button onclick="window.location.href='mailto:${config.emailCommande}'" style="margin-top:10px;">POSER UNE QUESTION</button>`;
+        document.getElementById('share-qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${window.location.href}`;
+    }
 
-    const printerGrid = document.getElementById('printer-grid-container');
-    const overlayContent = printerGrid.parentElement;
-    
-    // Vider le conteneur HTML avant de le remplir avec JS pour éviter les doublons
-    printerGrid.innerHTML = ''; 
+    // --- CONSTRUCTION DE LA GRILLE DES PC ---
+    function buildPrinterGrid() {
+        const printerGrid = document.getElementById('printer-grid-container');
+        printerGrid.innerHTML = ''; 
 
-    const caisseContainer = document.createElement('div');
-    caisseContainer.style.width = '100%';
-    caisseContainer.style.marginTop = '20px';
+        const pcButtonsFragment = document.createDocumentFragment();
+        const caisseContainer = document.createElement('div');
+        caisseContainer.style.cssText = 'width: 100%; margin-top: 20px;';
 
-    for (const pcId in config.liensDropbox) {
-        const button = document.createElement('button');
-        button.className = 'printer-choice-btn';
-        button.dataset.linkId = pcId;
-        
-        button.addEventListener('click', () => {
-            const dropboxUrl = config.liensDropbox[pcId];
-            if (dropboxUrl && dropboxUrl.startsWith('http')) {
-                window.open(dropboxUrl, '_blank');
-                toggleOverlay(document.getElementById('printerSelectOverlay'), false);
+        Object.keys(config.liensDropbox).forEach(pcId => {
+            const button = document.createElement('button');
+            button.className = 'printer-choice-btn';
+            button.dataset.linkId = pcId;
+
+            button.addEventListener('click', () => {
+                const dropboxUrl = config.liensDropbox[pcId];
+                if (dropboxUrl && dropboxUrl.startsWith('http')) {
+                    window.open(dropboxUrl, '_blank');
+                    toggleOverlay(document.getElementById('printerSelectOverlay'), false);
+                } else {
+                    alert('Lien de dépôt non configuré pour ce PC.');
+                }
+            });
+
+            if (pcId === 'pcCaisse') {
+                button.textContent = 'PC CAISSE';
+                caisseContainer.appendChild(button);
             } else {
-                alert('Lien de dépôt non configuré pour ce PC.');
+                button.textContent = `PC ${pcId.replace('pc', '').toUpperCase()}`;
+                pcButtonsFragment.appendChild(button);
             }
         });
 
-        if (pcId === 'pcCaisse') {
-            button.textContent = 'PC CAISSE';
-            caisseContainer.appendChild(button);
-        } else {
-            button.textContent = `PC ${pcId.replace('pc', '').toUpperCase()}`;
-            printerGrid.appendChild(button);
-        }
+        const newBackButton = document.createElement('button');
+        newBackButton.textContent = 'RETOUR';
+        newBackButton.className = 'close-overlay-btn';
+        newBackButton.style.marginTop = '10px';
+        
+        caisseContainer.appendChild(newBackButton);
+        printerGrid.appendChild(pcButtonsFragment);
+        printerGrid.after(caisseContainer);
     }
 
-    printerGrid.after(caisseContainer);
-
-    const newBackButton = document.createElement('button');
-    newBackButton.textContent = 'RETOUR';
-    newBackButton.className = 'close-overlay-btn';
-    newBackButton.style.marginTop = '10px';
-    newBackButton.addEventListener('click', () => {
-        toggleOverlay(document.getElementById('printerSelectOverlay'), false);
-    });
-    caisseContainer.appendChild(newBackButton);
-
-    // --- GESTION DES VUES PRINCIPALES ---
+    // --- GESTION DES VUES ET OVERLAYS ---
     const views = document.querySelectorAll('.view');
     function showView(viewId) {
-        views.forEach(view => {
-            view.style.display = 'none';
-        });
-        const viewToShow = document.getElementById(viewId);
-        if (viewToShow) {
-            viewToShow.style.display = 'block';
-        }
+        views.forEach(view => view.style.display = 'none');
+        document.getElementById(viewId).style.display = 'block';
     }
 
-    // --- GESTION DES POP-UPS (OVERLAYS) ---
     function toggleOverlay(overlayElement, show) {
-        if (show) {
-            overlayElement.style.display = 'flex';
-            document.body.classList.add('overlay-active');
-        } else {
-            overlayElement.style.display = 'none';
-            document.body.classList.remove('overlay-active');
-        }
+        if (!overlayElement) return;
+        overlayElement.style.display = show ? 'flex' : 'none';
+        document.body.classList.toggle('overlay-active', show);
     }
 
-    // --- CONNEXION DES BOUTONS AUX ACTIONS ---
+    // --- LOGIQUE DES BOUTONS ---
+    function setupEventListeners() {
+        document.body.addEventListener('click', (e) => {
+            const target = e.target;
+            const targetId = target.id;
 
-    // Overlays
-    document.getElementById('hoursBtn').addEventListener('click', () => toggleOverlay(document.getElementById('hoursOverlay'), true));
-    document.getElementById('contactsBtn').addEventListener('click', () => toggleOverlay(document.getElementById('contactsOverlay'), true));
-    document.getElementById('orderByMailBtn').addEventListener('click', () => toggleOverlay(document.getElementById('orderMailOverlay'), true));
-    document.getElementById('depositFileBtn').addEventListener('click', () => toggleOverlay(document.getElementById('printerSelectOverlay'), true));
-    document.getElementById('shareAppBtn').addEventListener('click', () => toggleOverlay(document.getElementById('shareOverlay'), true));
-    document.querySelectorAll('.close-overlay-btn').forEach(btn => {
-      btn.addEventListener('click', () => toggleOverlay(btn.closest('.overlay'), false));
-    });
+            const actions = {
+                'goToEmailChoiceBtn': () => showView('email-choice-view'),
+                'backToMainFromEmailBtn': () => showView('main-dashboard'),
+                'downloadAppBtn': () => showView('download-view'),
+                'backToMainFromDownloadBtn': () => showView('main-dashboard'),
+                'scanQRCodeBtn': () => { showView('scanner-view'); startCamera(); },
+                'cancelScanBtn': () => { stopCamera(); showView('main-dashboard'); },
+                'hoursBtn': () => toggleOverlay(document.getElementById('hoursOverlay'), true),
+                'contactsBtn': () => toggleOverlay(document.getElementById('contactsOverlay'), true),
+                'orderByMailBtn': () => toggleOverlay(document.getElementById('orderMailOverlay'), true),
+                'depositFileBtn': () => toggleOverlay(document.getElementById('printerSelectOverlay'), true),
+                'shareAppBtn': () => toggleOverlay(document.getElementById('shareOverlay'), true),
+                'haveFileOnPhoneBtn': () => window.location.href = `mailto:${config.emailSelfService}`,
+                'transferEmailBtn': handleTransferEmail,
+                'nativeShareBtn': () => alert("Cette fonction sera bientôt active !")
+            };
 
-    // Mails
-    document.getElementById('haveFileOnPhoneBtn').addEventListener('click', () => window.location.href = `mailto:${config.emailSelfService}`);
+            if (actions[targetId]) {
+                actions[targetId]();
+            } else if (target.classList.contains('close-overlay-btn')) {
+                const overlay = target.closest('.overlay');
+                if (overlay) toggleOverlay(overlay, false);
+            }
+        });
+    }
 
-    document.getElementById('transferEmailBtn').addEventListener('click', () => {
-      document.getElementById('copy-confirm-title').textContent = 'Adresse e-mail copiée !';
-      document.getElementById('copied-email-box').textContent = config.emailSelfService;
-      const instructionsList = document.getElementById('copy-instructions');
-      instructionsList.innerHTML = `
-        <li>Ouvrez votre application d'e-mails.</li>
-        <li>Collez notre adresse comme destinataire.</li>
-        <li>Envoyez votre e-mail à transférer.</li>
-        <li>Sur le PC, double-cliquez sur l'icône "Boîte de réception" et attendez votre e-mail.</li>
-      `;
-      navigator.clipboard.writeText(config.emailSelfService)
-        .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
-        .catch(() => alert("Erreur lors de la copie de l'adresse e-mail."));
-    });
-
-    // Vues
-    document.getElementById('downloadAppBtn').addEventListener('click', () => showView('download-view'));
-    document.getElementById('backToMainFromDownloadBtn').addEventListener('click', () => showView('main-dashboard'));
-    document.getElementById('scanQRCodeBtn').addEventListener('click', () => {
-        showView('scanner-view');
-        startCamera();
-    });
-    document.getElementById('cancelScanBtn').addEventListener('click', () => {
-        stopCamera();
-        showView('main-dashboard');
-    });
-
-    // --- MODIFICATIONS JS ---
-    // Gère le clic sur le nouveau bouton "ENVOYER PAR MAIL" pour afficher la vue des choix
-    document.getElementById('goToEmailChoiceBtn').addEventListener('click', () => showView('email-choice-view'));
-    // Gère le clic sur le bouton "RETOUR" de la nouvelle vue
-    document.getElementById('backToMainFromEmailBtn').addEventListener('click', () => showView('main-dashboard'));
-    // --- FIN DES MODIFICATIONS JS ---
+    function handleTransferEmail() {
+        document.getElementById('copy-confirm-title').textContent = 'Adresse e-mail copiée !';
+        document.getElementById('copied-email-box').textContent = config.emailSelfService;
+        document.getElementById('copy-instructions').innerHTML = `
+            <li>Ouvrez votre application d'e-mails.</li>
+            <li>Collez notre adresse comme destinataire.</li>
+            <li>Envoyez votre e-mail à transférer.</li>
+            <li>Sur le PC, double-cliquez sur l'icône "Boîte de réception" et attendez votre e-mail.</li>`;
+        
+        navigator.clipboard.writeText(config.emailSelfService)
+            .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
+            .catch(() => alert("Erreur lors de la copie de l'adresse e-mail."));
+    }
 
     // --- LOGIQUE DU SCANNER QR CODE ---
     let stream, scanning = false;
     const video = document.getElementById('video');
     const scanResultOverlay = document.getElementById('scanResultOverlay');
-    const scanResultLink = document.getElementById('scan-result-link');
-    const followScanLinkBtn = document.getElementById('followScanLinkBtn');
-    const rescanBtn = document.getElementById('rescanBtn');
     
     async function startCamera() {
       try {
-        if (stream) { 
-          stream.getTracks().forEach(track => track.stop());
-        }
+        if (stream) stream.getTracks().forEach(track => track.stop());
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
-        video.onloadedmetadata = () => {
-          video.play();
-          scanning = true;
-          requestAnimationFrame(scanLoop);
-        };
+        await video.play();
+        scanning = true;
+        requestAnimationFrame(scanLoop);
       } catch (err) {
         console.error("Erreur de caméra:", err);
-        alert('Impossible d’accéder à la caméra. Veuillez vérifier les autorisations dans les paramètres de votre navigateur.');
+        alert('Impossible d’accéder à la caméra. Veuillez vérifier les autorisations.');
         showView('main-dashboard');
       }
     }
@@ -376,31 +328,28 @@
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const code = jsQR(imageData.data, imageData.width, imageData.height);
+        
         if (code && code.data) {
             stopCamera();
-            
-            scanResultLink.textContent = code.data;
-            followScanLinkBtn.onclick = () => window.open(code.data, '_blank');
-            rescanBtn.onclick = () => {
+            document.getElementById('scan-result-link').textContent = code.data;
+            document.getElementById('followScanLinkBtn').onclick = () => window.open(code.data, '_blank');
+            document.getElementById('rescanBtn').onclick = () => {
                 toggleOverlay(scanResultOverlay, false);
-                showView('scanner-view');
                 startCamera();
             };
             toggleOverlay(scanResultOverlay, true);
+            return;
         }
       }
-      if (scanning) {
-        requestAnimationFrame(scanLoop);
-      }
+      requestAnimationFrame(scanLoop);
     }
-
-    // Bouton de partage natif (pour plus tard)
-    document.getElementById('nativeShareBtn').addEventListener('click', () => {
-        alert("Cette fonction sera bientôt active !");
-    });
+    
+    // --- APPEL DES FONCTIONS D'INITIALISATION ---
+    initDynamicContent();
+    buildPrinterGrid();
+    setupEventListeners();
   });
 </script>
 
-
-
 </body></html>
+
