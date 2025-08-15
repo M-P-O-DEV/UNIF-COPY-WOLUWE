@@ -49,7 +49,6 @@
   #share-qr-code { max-width: 200px; width: 100%; border: 2px solid #ffb347; border-radius: 10px; margin-top: 15px; }
   .view { display: none; }
 
-  /* --- MODIFICATION CSS --- */
   #horaires-contenu {
     font-size: 1.3rem;
     line-height: 1.7;
@@ -58,7 +57,6 @@
     font-size: 1.1rem;
     line-height: 1.6;
   }
-  /* --- FIN MODIFICATION CSS --- */
 </style>
 </head>
 <body>
@@ -86,7 +84,6 @@
       </div>
     </div>
 
-    <!-- --- MODIFICATION HTML --- -->
     <div id="download-view" class="view" style="width:100%;">
         <h2 class="download-page-title">Téléchargez l'application pour l'ajouter à votre écran d'accueil, plus besoin de scanner notre QR code la prochaine fois !</h2>
         <div class="download-choice">
@@ -104,7 +101,6 @@
         </div>
         <button id="backToMainFromDownloadBtn" style="margin-top: 20px;">RETOUR</button>
     </div>
-    <!-- --- FIN MODIFICATION HTML --- -->
 
     <div id="scanner-view" class="view" style="width:100%;">
       <video id="video" playsinline autoplay muted></video>
@@ -128,16 +124,20 @@
   <div id="copyEmailOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;"><p style="font-size: 1.2rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;" id="copy-confirm-text"></p><p style="font-size: 1rem; line-height: 1.5;">Vous pouvez maintenant aller dans votre application e-mail pour transférer votre message.</p><button class="close-overlay-btn">J'AI COMPRIS</button></div></div>
   <div id="scanResultOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;"><h3 style="font-size: 1.5rem; margin-top:0;">Lien Détecté</h3><p id="scan-result-link" style="font-size: 1rem; color: #ffb347; word-break: break-all; margin: 20px 0;"></p><div class="button-group"><button id="followScanLinkBtn">SUIVRE LE LIEN</button><button id="rescanBtn">RECOMMENCER</button></div></div></div>
   
+  <!-- --- MODIFICATION HTML --- -->
   <div id="shareOverlay" class="overlay">
     <div class="overlay-content">
       <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Partager l'application avec vos amis</h3>
       <p style="color: #ffb347;">Partager par QR Code</p>
       <img id="share-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://VOTRE_URL_ICI" alt="QR Code de Partage">
       <div class="share-popup-separator">OU</div>
-      <button id="nativeShareBtn">Envoyer le lien</button>
+      <div class="button-group" style="margin-top: 10px;">
+        <button id="nativeShareBtn">Envoyer le lien</button>
+        <button class="close-overlay-btn">RETOUR</button>
+      </div>
     </div>
-    <button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button>
   </div>
+  <!-- --- FIN MODIFICATION HTML --- -->
   
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
