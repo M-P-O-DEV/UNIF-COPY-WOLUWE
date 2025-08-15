@@ -71,14 +71,16 @@
   }
   /* --- MODIFICATION CSS --- */
   #copied-email-address {
-    color: #00ff00;
+    color: #fff;
     font-weight: bold;
     font-size: 1.2rem;
     margin-bottom: 10px;
+    word-break: break-all; /* Permet au texte de se couper pour éviter tout débordement */
   }
   #copy-confirm-text {
-    color: #fff;
+    color: #00ff00; /* Texte de confirmation en vert */
     font-size: 1.1rem;
+    font-weight: bold;
   }
   /* --- FIN MODIFICATION CSS --- */
 </style>
@@ -145,7 +147,6 @@
     </div>
   </div>
 
-  <!-- --- MODIFICATION HTML --- -->
   <div id="copyEmailOverlay" class="overlay">
     <div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;">
       <h3 id="copied-email-address"></h3>
@@ -154,7 +155,6 @@
       <button class="close-overlay-btn" style="margin-top: 20px;">J'AI COMPRIS</button>
     </div>
   </div>
-  <!-- --- FIN MODIFICATION HTML --- -->
 
   <div id="scanResultOverlay" class="overlay"><div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;"><h3 style="font-size: 1.5rem; margin-top:0;">Lien Détecté</h3><p id="scan-result-link" style="font-size: 1rem; color: #ffb347; word-break: break-all; margin: 20px 0;"></p><div class="button-group"><button id="followScanLinkBtn">SUIVRE LE LIEN</button><button id="rescanBtn">RECOMMENCER</button></div></div></div>
   
@@ -279,7 +279,6 @@
     // Mails
     document.getElementById('haveFileOnPhoneBtn').addEventListener('click', () => window.location.href = `mailto:${config.emailSelfService}`);
 
-    // --- MODIFICATION SCRIPT ---
     document.getElementById('transferEmailBtn').addEventListener('click', () => {
       // Mise à jour du contenu de la fenêtre de confirmation
       document.getElementById('copied-email-address').textContent = config.emailSelfService;
@@ -297,7 +296,6 @@
         .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
         .catch(() => alert("Erreur lors de la copie de l'adresse e-mail."));
     });
-    // --- FIN MODIFICATION SCRIPT ---
 
     // Vues
     document.getElementById('downloadAppBtn').addEventListener('click', () => showView('download-view'));
