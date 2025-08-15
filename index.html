@@ -1,8 +1,7 @@
-<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UNIF-COPY WOLUWE - Impression sur Place</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
@@ -69,27 +68,21 @@
   #copy-instructions li {
     margin-bottom: 10px;
   }
-  /* --- DÉBUT DE LA SECTION CORRIGÉE --- */
-  #copyEmailOverlay {
-    justify-content: center; /* Centre le contenu verticalement dans l'écran */
-  }
-  
-  #copied-email-address {
-    color: #00ff00;       /* L'adresse e-mail est en vert */
+  /* --- MODIFICATION CSS --- */
+  #copied-email-box {
+    color: #ffb347;
     font-weight: bold;
-    font-size: 1.3rem;    /* Taille par défaut */
-    margin-bottom: 15px;
-    white-space: nowrap;  /* Toujours sur une seule ligne */
+    font-size: 1rem; /* Taille de police légèrement réduite */
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid #ffb347;
+    border-radius: 8px;
+    white-space: nowrap; /* Empêche le retour à la ligne */
+    overflow: hidden; /* Cache tout ce qui pourrait déborder */
+    text-overflow: ellipsis; /* Ajoute "..." si le texte est encore trop long */
     text-align: center;
-    max-width: 100%;      /* Ne dépasse jamais le cadre */
-    display: block;       /* S'assure d'occuper toute la largeur dispo */
   }
-  #copy-confirm-text {
-    color: #ffb347;      /* Texte de confirmation harmonisé avec le reste du site */
-    font-size: 1.1rem;
-    font-weight: bold;
-  }
-  /* --- FIN DE LA SECTION CORRIGÉE --- */
+  /* --- FIN MODIFICATION CSS --- */
 </style>
 </head>
 <body>
@@ -102,10 +95,10 @@
       
       <div class="bloc"><h3>Dépôt Rapide (Recommandé)</h3><p class="bloc-description">Pour tous vos fichiers (PDF, photos...). Idéal pour envoyer plusieurs fichiers à la fois.</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
       <div class="bloc"><h3>Envoi par E-mail</h3><p class="bloc-description">Choisissez la situation qui vous correspond.</p><div class="button-group"><button id="haveFileOnPhoneBtn">J'ai un fichier sur mon téléphone</button><button id="transferEmailBtn">Je veux transférer un e-mail</button></div></div>
-      <div class="bloc"><h3>Transfert par QR Code</h3><p class="bloc-description">Pour une connexion directe et rapide entre votre téléphone et le PC.</p><button id="scanQRCodeBtn">Scanner le QR Code du PC</button></div>
+      <div class="bloc"><h3>Transfert par QR Code</h3><p class="bloc-description">Pour une connexion directe et rapide entre votre téléphone et le PC.</p><button id="scanQRCodeBtn">ENVOYER PAR QR CODE</button></div>
       
       <h2 class="section-title">COMMANDES</h2>
-      <div class="button-group"><a id="orderOnlineLink" href="#" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a><button id="orderByMailBtn">Commander par mail</button></div>
+      <div class="button-group"><a id="orderOnlineLink" href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a><button id="orderByMailBtn">Commander par mail</button></div>
       
       <h2 class="section-title">INFORMATIONS</h2>
       <div class="button-group"><button id="hoursBtn">Heures d'ouverture</button><button id="contactsBtn">Contacts</button></div>
@@ -136,27 +129,28 @@
     </div>
 
     <div id="scanner-view" class="view" style="width:100%;">
-      <video id="video" playsinline autoplay muted></video>
-      <div id="scanInstruction" style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;"></div>
+      <video id="video" playsinline="" autoplay="" muted=""></video>
+      <div id="scanInstruction" style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;">Sur le PC devant vous, double-cliquez sur l'icône "SCAN QR CODE" et visez le QR code qui apparaît.</div>
       <button id="cancelScanBtn" style="margin-top: 15px;">ANNULER</button>
     </div>
   </main>
   
-  <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
-  <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"></div><div id="contact-mail"></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
-  <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
+  <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu">À PARTIR DU 04/08/25<br><br>LUNDI AU SAMEDI<br>10H00 - 14H00<br>14H30 - 17H00</div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
+  <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"><span>TELEPHONE :</span><br>02 461 30 05<button onclick="window.location.href='tel:+3224613005'" style="margin-top:10px;">APPELER</button></div><div id="contact-mail"><span>MAIL :</span><br>FACOPYBXL@PROXIMUS.BE<button onclick="window.location.href='mailto:FACOPYBXL@PROXIMUS.BE'" style="margin-top:10px;">POSER UNE QUESTION</button></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
+  <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address">FACOPYBXL@PROXIMUS.BE</div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   
   <div id="printerSelectOverlay" class="overlay">
     <div class="overlay-content">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
-        <div class="printer-grid" id="printer-grid-container"></div>
-        </div>
+        <div class="printer-grid" id="printer-grid-container"><button class="printer-choice-btn" data-link-id="pc1">PC 1</button><button class="printer-choice-btn" data-link-id="pc2">PC 2</button><button class="printer-choice-btn" data-link-id="pc3">PC 3</button><button class="printer-choice-btn" data-link-id="pc4">PC 4</button><button class="printer-choice-btn" data-link-id="pc5">PC 5</button><button class="printer-choice-btn" data-link-id="pc6">PC 6</button><button class="printer-choice-btn" data-link-id="pc7">PC 7</button><button class="printer-choice-btn" data-link-id="pc9">PC 9</button><button class="printer-choice-btn" data-link-id="pc10">PC 10</button><button class="printer-choice-btn" data-link-id="pcA">PC A</button><button class="printer-choice-btn" data-link-id="pcB">PC B</button><button class="printer-choice-btn" data-link-id="pcC">PC C</button></div><div style="width: 100%; margin-top: 20px;"><button class="printer-choice-btn" data-link-id="pcCaisse">PC CAISSE</button><button class="close-overlay-btn" style="margin-top: 10px;">RETOUR</button></div>
+        <!-- Les boutons du bas seront ajoutés ici par le script -->
+    </div>
   </div>
 
   <div id="copyEmailOverlay" class="overlay">
     <div class="overlay-content" style="border: 2px solid #00ff00; padding: 25px; border-radius: 15px; background: #1a1a1a;">
-      <h3 id="copied-email-address"></h3>
-      <p id="copy-confirm-text"></p>
+      <h3 id="copy-confirm-title" style="font-size: 1.3rem; line-height: 1.5; color: #00ff00; margin-top:0; font-weight:bold;"></h3>
+      <div id="copied-email-box"></div>
       <ol id="copy-instructions"></ol>
       <button class="close-overlay-btn" style="margin-top: 20px;">J'AI COMPRIS</button>
     </div>
@@ -168,7 +162,7 @@
     <div class="overlay-content">
       <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Partager l'application avec vos amis</h3>
       <p style="color: #ffb347;">Partager par QR Code</p>
-      <img id="share-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://VOTRE_URL_ICI" alt="QR Code de Partage">
+      <img id="share-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=https://VOTRE_URL_ICI" alt="QR Code de Partage">
       <div class="share-popup-separator">OU</div>
       <div class="button-group" style="margin-top: 10px;">
         <button id="nativeShareBtn">Envoyer le lien</button>
@@ -270,33 +264,6 @@
         }
     }
 
-    // --- FONCTION: ADAPTER LA TAILLE DU TEXTE POUR TENIR SUR UNE LIGNE SANS DÉPASSER ---
-    function fitTextToOneLine(el, minPx = 10, maxPx = 40) {
-      if (!el) return;
-      // réinitialise à une taille max raisonnable, puis réduit si nécessaire
-      el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) || 20) + 'px';
-      // si l'élément est caché, attendre la prochaine frame
-      const doFit = () => {
-        let size = parseFloat(getComputedStyle(el).fontSize);
-        // augmenter jusqu'au max si ça tient
-        while (size < maxPx && el.scrollWidth <= el.clientWidth) {
-          size += 1;
-          el.style.fontSize = size + 'px';
-        }
-        // si on a dépassé, recule d'un pas
-        if (el.scrollWidth > el.clientWidth) {
-          size -= 1;
-          el.style.fontSize = size + 'px';
-        }
-        // réduire si ça ne tient pas
-        while (el.scrollWidth > el.clientWidth && size > minPx) {
-          size -= 1;
-          el.style.fontSize = size + 'px';
-        }
-      };
-      requestAnimationFrame(doFit);
-    }
-
     // --- CONNEXION DES BOUTONS AUX ACTIONS ---
 
     // Overlays
@@ -314,12 +281,8 @@
 
     document.getElementById('transferEmailBtn').addEventListener('click', () => {
       // Mise à jour du contenu de la fenêtre de confirmation
-      const emailEl = document.getElementById('copied-email-address');
-      const confirmEl = document.getElementById('copy-confirm-text');
-
-      emailEl.textContent = config.emailSelfService;
-      confirmEl.textContent = 'Adresse e-mail copiée !';
-
+      document.getElementById('copy-confirm-title').textContent = 'Adresse e-mail copiée !';
+      document.getElementById('copied-email-box').textContent = config.emailSelfService;
       const instructionsList = document.getElementById('copy-instructions');
       instructionsList.innerHTML = `
         <li>Ouvrez votre application d'e-mails.</li>
@@ -330,21 +293,8 @@
 
       // Copie dans le presse-papiers et affichage de la fenêtre
       navigator.clipboard.writeText(config.emailSelfService)
-        .then(() => {
-          const overlay = document.getElementById('copyEmailOverlay');
-          toggleOverlay(overlay, true);
-          // Adapter la taille pour que l'e-mail tienne sur une ligne SANS troncature
-          requestAnimationFrame(() => fitTextToOneLine(emailEl, 10, 28));
-        })
+        .then(() => toggleOverlay(document.getElementById('copyEmailOverlay'), true))
         .catch(() => alert("Erreur lors de la copie de l'adresse e-mail."));
-    });
-
-    // Réajuster si l'utilisateur redimensionne l'écran pendant que l'overlay est ouvert
-    window.addEventListener('resize', () => {
-      const overlay = document.getElementById('copyEmailOverlay');
-      if (overlay && overlay.style.display === 'flex') {
-        fitTextToOneLine(document.getElementById('copied-email-address'), 10, 28);
-      }
     });
 
     // Vues
@@ -428,5 +378,6 @@
     });
   });
 </script>
-</body>
-</html>
+
+
+</body></html>
