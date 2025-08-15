@@ -22,6 +22,16 @@
   .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(18, 18, 18, 0.95); color: #ff6f00; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; z-index: 9999; }
   .overlay-content { max-width: 500px; }
   .printer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; width: 100%; margin-bottom: 20px; }
+
+  /* */
+  .download-page-title { font-size: 1.3rem; color: #ffb347; line-height: 1.5; margin-bottom: 30px; }
+  .download-choice { background: rgba(47, 47, 47, 0.5); border: 1px solid #ffb347; border-radius: 15px; padding: 25px; margin-bottom: 20px; }
+  .download-choice h3 { margin-top: 0; font-size: 1.5rem; }
+  .download-choice p { font-size: 0.9rem; line-height: 1.4; color: #fff; }
+  .share-popup-separator { font-size: 1.5rem; margin: 20px 0; font-weight: 900; color: #ffb347; }
+  #share-qr-code { max-width: 200px; width: 100%; border: 2px solid #ffb347; border-radius: 10px; margin-top: 15px; }
+  /* */
+
 </style>
 </head>
 <body>
@@ -33,10 +43,41 @@
       <div class="bloc"><h3>Dépôt Rapide (Recommandé)</h3><p class="bloc-description">Pour tous vos fichiers (PDF, photos...). Idéal pour envoyer plusieurs fichiers à la fois.</p><button id="depositFileBtn">Déposer mes fichiers</button></div>
       <div class="bloc"><h3>Envoi par E-mail</h3><p class="bloc-description">Choisissez la situation qui vous correspond.</p><div class="button-group"><button id="haveFileOnPhoneBtn">J'ai un fichier sur mon téléphone</button><button id="transferEmailBtn">Je veux transférer un e-mail</button></div></div>
       <div class="bloc"><h3>Transfert par QR Code</h3><p class="bloc-description">Pour une connexion directe et rapide entre votre téléphone et le PC.</p><button id="scanQRCodeBtn">Scanner le QR Code du PC</button></div>
+      
       <h2 class="section-title">COMMANDES</h2>
       <div class="button-group"><a id="orderOnlineLink" href="#" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a><button id="orderByMailBtn">Commander par mail</button></div>
+      
       <h2 class="section-title">INFORMATIONS</h2>
       <div class="button-group"><button id="hoursBtn">Heures d'ouverture</button><button id="contactsBtn">Contacts</button></div>
+
+      <h2 class="section-title">APPLICATION</h2>
+      <div class="button-group">
+        <button id="downloadAppBtn">Télécharger l'application</button>
+        <button id="shareAppBtn">Partager l'application</button>
+      </div>
+      </div>
+
+    <div id="download-view" style="display:none; width:100%;">
+        <h2 class="download-page-title">Téléchargez l'application pour l'ajouter à votre écran d'accueil, plus besoin de scanner notre QR code la prochaine fois !</h2>
+
+        <div class="download-choice">
+            <h3>Android</h3>
+            <p>Obtenez la version officielle et sécurisée de l'application sur le Google Play Store.</p>
+            <button id="downloadAndroidBtn">Disponible sur Google Play</button>
+        </div>
+
+        <div class="download-choice">
+            <h3>iOS (iPhone)</h3>
+            <p>Suivez ces étapes simples pour ajouter l'application à votre écran d'accueil :</p>
+            <ol style="text-align: left; color: #ffb347; font-size: 0.9rem; line-height: 1.6;">
+                <li>Ouvrez ce site dans <strong>Safari</strong>.</li>
+                <li>Appuyez sur l'icône de <strong>Partage</strong> 📤 en bas de l'écran.</li>
+                <li>Faites défiler et choisissez <strong>"Sur l'écran d'accueil"</strong>.</li>
+            </ol>
+             <button id="downloadIosBtn" style="display: none;">AFFICHER LES INSTRUCTIONS</button>
+        </div>
+
+        <button id="backToMainBtn" style="margin-top: 20px;">RETOUR</button>
     </div>
     <div id="scanner-view" style="display:none; width:100%;"><video id="video" playsinline autoplay muted></video><div id="scanInstruction" style="margin-top: 15px; background: rgba(0,0,0,0.8); color: #ffb347; padding: 15px; border-radius: 10px; border: 1px solid #ffb347; font-size: 1.1rem; line-height: 1.4;"></div><button id="cancelScanBtn" style="margin-top: 15px;">ANNULER</button></div>
   </main>
@@ -63,8 +104,20 @@
       </div>
   </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <div id="shareOverlay" class="overlay">
+      <div class="overlay-content">
+          <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Partager l'application</h3>
+          
+          <p style="color: #ffb347;">Partager par QR Code</p>
+          <img id="share-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://VOTRE_URL_ICI" alt="QR Code de Partage">
+          
+          <div class="share-popup-separator">OU</div>
+          
+           <button id="nativeShareBtn">📲 Envoyez le lien</button>
+      </div>
+      <button class="close-overlay-btn" style="margin-top:20px;">FERMER</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     // --- BLOC DE CONFIGURATION ---
@@ -97,7 +150,6 @@
         const button = document.createElement('button');
         button.className = 'printer-choice-btn';
         button.dataset.linkId = pcId;
-        // Pour gérer le nom "PC CAISSE" correctement
         if (pcId === 'pcCaisse') {
             button.textContent = 'PC CAISSE';
         } else {
@@ -146,7 +198,23 @@
         .catch(() => alert("Erreur de copie."));
     });
 
-    // --- LOGIQUE DU SCANNER QR CODE ---
+    // const downloadView = document.getElementById('download-view');
+    
+    document.getElementById('downloadAppBtn').addEventListener('click', () => {
+        mainDashboard.style.display = 'none';
+        scannerView.style.display = 'none'; // Assurons-nous que le scanner est aussi caché
+        downloadView.style.display = 'block';
+    });
+
+    document.getElementById('backToMainBtn').addEventListener('click', () => {
+        downloadView.style.display = 'none';
+        mainDashboard.style.display = 'block';
+    });
+
+    document.getElementById('shareAppBtn').addEventListener('click', () => {
+        toggleOverlay(document.getElementById('shareOverlay'), true);
+    });
+    // // --- LOGIQUE DU SCANNER QR CODE ---
     let stream, scanning = false;
     const video = document.getElementById('video');
     const scanResultOverlay = document.getElementById('scanResultOverlay');
@@ -156,6 +224,7 @@
     
     document.getElementById('scanQRCodeBtn').addEventListener('click', () => {
       mainDashboard.style.display = 'none';
+      downloadView.style.display = 'none'; // Assurons-nous que la page de téléchargement est cachée
       scannerView.style.display = 'block';
       video.style.display = 'block';
       startCamera();
