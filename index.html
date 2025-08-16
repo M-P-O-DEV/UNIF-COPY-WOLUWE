@@ -100,7 +100,8 @@
         <h2 class="download-page-title">Téléchargez l'application pour l'ajouter à votre écran d'accueil!</h2>
         <div class="download-choice">
             <h3>Android</h3>
-            <button id="downloadAndroidBtn">TELECHARGER SUR PLAYSTORE</button>
+            <!-- MODIFICATION 2: Texte du bouton mis à jour -->
+            <button id="downloadAndroidBtn">TELECHARGER SUR LE PLAYSTORE</button>
         </div>
         <div class="download-choice">
             <h3>iOS (iPhone)</h3>
@@ -123,7 +124,6 @@
   <div id="orderWarningOverlay" class="overlay">
     <div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;">
         <h3 style="font-size: 1.5rem; margin-top:0; color: #ffb347;">AVERTISSEMENT</h3>
-        <!-- MODIFICATION : La ligne sur le minimum de commande a été retirée -->
         <p style="font-size: 1.1rem; line-height: 1.6; color: #fff; margin: 20px 0;">
             Assurez-vous de sélectionner le magasin de <strong>Woluwé</strong> sur la page suivante !
         </p>
@@ -136,7 +136,17 @@
 
   <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"></div><div id="contact-mail"></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
-  <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
+  
+  <!-- MODIFICATION 1: Les boutons sont maintenant dans un button-group pour avoir la même taille -->
+  <div id="orderMailOverlay" class="overlay">
+    <div class="overlay-content">
+        <div id="order-mail-address" style="margin-bottom: 20px;"></div>
+        <div class="button-group">
+            <button id="order-mail-action-btn">ENVOYER UN MAIL</button>
+            <button class="close-overlay-btn">RETOUR</button>
+        </div>
+    </div>
+  </div>
   
   <div id="printerSelectOverlay" class="overlay">
     <div class="overlay-content">
