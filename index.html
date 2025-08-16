@@ -26,19 +26,19 @@
     z-index: 9999; overflow-y: auto;
   }
 
-  /* --- MODIFICATION 1: STYLES DU BANDEAU DÉFILANT MIS À JOUR --- */
+  /* --- MODIFICATION : TAILLE DU BANDEAU ENCORE PLUS RÉDUITE --- */
   .scrolling-banner-container {
     width: 100%;
     background-color: rgba(0, 0, 0, 0.6);
     overflow: hidden;
     white-space: nowrap;
-    padding: 5px 0;
+    padding: 2px 0; /* Hauteur encore plus réduite */
   }
   .scrolling-text {
     display: inline-block;
     padding-left: 100%;
     animation: scroll-left 25s linear infinite;
-    font-size: 1rem;
+    font-size: 0.8rem; /* Taille de police encore plus réduite */
     color: #ffb347;
     letter-spacing: 1px;
   }
@@ -73,7 +73,6 @@
 <body>
   <header>UNIF-COPY WOLUWE</header>
 
-  <!-- MODIFICATION 2: LE BANDEAU EST MAINTENANT SOUS LE HEADER -->
   <div class="scrolling-banner-container">
       <p id="scrolling-text" class="scrolling-text"></p>
   </div>
