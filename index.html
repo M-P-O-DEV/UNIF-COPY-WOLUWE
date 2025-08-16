@@ -21,7 +21,7 @@
   .overlay { 
     position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
     background: rgba(18, 18, 18, 0.95); color: #ff6f00; 
-    display: none; flex-direction: column; justify-content: flex-start;
+    display: none; flex-direction: column; justify-content: center; /* Centrer le contenu verticalement */
     align-items: center; padding: 40px 25px; text-align: center; 
     z-index: 9999; overflow-y: auto;
   }
@@ -52,7 +52,6 @@
       
       <h2 class="section-title">IMPRESSION<br>SELF-SERVICE</h2>
       
-      <!-- MODIFICATION: La description est maintenant au-dessus du bouton -->
       <div class="bloc">
         <p class="bloc-description">Le plus simple et le plus rapide</p>
         <button id="depositFileBtn">Déposer mes fichiers</button>
@@ -68,7 +67,7 @@
       
       <h2 class="section-title">COMMANDES</h2>
       <div class="button-group">
-        <a id="orderOnlineLink" href="https://commande.facopy.be/" target="_blank" rel="noopener noreferrer" class="link-button">Commander en ligne</a>
+        <button id="orderOnlineBtn" class="link-button">Commander en ligne</button>
         <button id="orderByMailBtn">Commander par mail</button>
       </div>
       
@@ -121,6 +120,20 @@
     </div>
   </main>
   
+  <div id="orderWarningOverlay" class="overlay">
+    <div class="overlay-content" style="border: 2px solid #ffb347; padding: 25px; border-radius: 15px; background: #1a1a1a;">
+        <h3 style="font-size: 1.5rem; margin-top:0; color: #ffb347;">AVERTISSEMENT</h3>
+        <!-- MODIFICATION : La ligne sur le minimum de commande a été retirée -->
+        <p style="font-size: 1.1rem; line-height: 1.6; color: #fff; margin: 20px 0;">
+            Assurez-vous de sélectionner le magasin de <strong>Woluwé</strong> sur la page suivante !
+        </p>
+        <div class="button-group">
+            <button id="continueOrderBtn">CONTINUER</button>
+            <button class="close-overlay-btn">ANNULER</button>
+        </div>
+    </div>
+  </div>
+
   <div id="hoursOverlay" class="overlay"><div class="overlay-content"><div id="horaires-contenu"></div></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
   <div id="contactsOverlay" class="overlay"><div class="overlay-content" style="display:flex; flex-direction:column; gap:20px; width:100%; max-width: 400px;"><div id="contact-phone"></div><div id="contact-mail"></div></div><button class="close-overlay-btn" style="margin-top:30px;">RETOUR</button></div>
   <div id="orderMailOverlay" class="overlay"><div class="overlay-content"><div id="order-mail-address"></div><br><button id="order-mail-action-btn">ENVOYER UN MAIL</button></div><button class="close-overlay-btn" style="margin-top:20px;">RETOUR</button></div>
@@ -128,9 +141,7 @@
   <div id="printerSelectOverlay" class="overlay">
     <div class="overlay-content">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px;">SÉLECTIONNEZ LE PC EN FACE DE VOUS</h3>
-        <div class="printer-grid" id="printer-grid-container">
-            <!-- Les boutons des PC sont générés par le script JavaScript -->
-        </div>
+        <div class="printer-grid" id="printer-grid-container"></div>
     </div>
   </div>
 
@@ -180,7 +191,6 @@
     // --- INITIALISATION DYNAMIQUE DE LA PAGE ---
     function initDynamicContent() {
         document.getElementById('horaires-contenu').innerHTML = config.heuresOuverture;
-        document.getElementById('orderOnlineLink').href = config.lienCommandeEnLigne;
         document.getElementById('order-mail-address').textContent = config.emailCommande;
         document.getElementById('order-mail-action-btn').onclick = () => window.location.href = `mailto:${config.emailCommande}`;
         document.getElementById('contact-phone').innerHTML = `<span>TELEPHONE :</span><br>${config.telephone.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4')}<button onclick="window.location.href='tel:+32${config.telephone.substring(1)}'" style="margin-top:10px;">APPELER</button>`;
@@ -264,7 +274,13 @@
                 'shareAppBtn': () => toggleOverlay(document.getElementById('shareOverlay'), true),
                 'haveFileOnPhoneBtn': () => window.location.href = `mailto:${config.emailSelfService}`,
                 'transferEmailBtn': handleTransferEmail,
-                'nativeShareBtn': () => alert("Cette fonction sera bientôt active !")
+                'nativeShareBtn': () => alert("Cette fonction sera bientôt active !"),
+                
+                'orderOnlineBtn': () => toggleOverlay(document.getElementById('orderWarningOverlay'), true),
+                'continueOrderBtn': () => {
+                    window.open(config.lienCommandeEnLigne, '_blank', 'noopener,noreferrer');
+                    toggleOverlay(document.getElementById('orderWarningOverlay'), false);
+                }
             };
 
             if (actions[targetId]) {
@@ -352,4 +368,3 @@
 </script>
 
 </body></html>
-
